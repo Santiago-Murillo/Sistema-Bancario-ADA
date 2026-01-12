@@ -1,5 +1,38 @@
-# Object file
+# GNAT/Ada build artifacts
 *.o
-
-# Ada Library Information
 *.ali
+b__*
+*.bexch
+*.cswi
+*.stdout
+*.stderr
+
+# Build output directories
+/bin/
+/obj/
+/share/
+
+# Executables and libraries (cross-platform)
+*.exe
+*.dll
+*.lib
+*.a
+*.so
+*.dylib
+
+# Editors/IDEs and local settings
+.idea/
+.history/
+*.swp
+*.swo
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*~
