@@ -1,4 +1,4 @@
-package Lenght is
+package Length is
    pragma Pure;
 
    MAX_ID : constant := 10;
@@ -6,5 +6,6 @@ package Lenght is
    MAX_TEXTO_LARGO : constant := 150;
    MAX_TELEFONO    : constant := 15;
    MAX_DINERO    : constant := 10;
+   MAX_TRANSACCION : constant := 5000.00;
 
 end Length;
