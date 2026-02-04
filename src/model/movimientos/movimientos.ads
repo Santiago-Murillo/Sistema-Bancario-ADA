@@ -6,6 +6,7 @@ package Model.Movimiento is
    pragma Pure;
 
    MAX_DESCRIPCION : constant := Length.MAX_TEXTO_LARGO;
+
    subtype Id_Movimiento_Type is Natural range 1 .. Natural'Last;
    type Dinero_Type is delta 0.01 digits Shared_Types.MAX_DINERO;
    type Tipo_Movimiento_Enum is (Deposito, Retiro, Transferencia, Interes);

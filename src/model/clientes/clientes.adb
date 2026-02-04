@@ -1,104 +1,60 @@
 package body Clientes is
 
-   --  Procedimiento privado para copiar un string a un campo de tamaño fijo
-   procedure Copiar_Campo (Destino : out String; Origen : String) is
-   begin
-      --  Inicializar con espacios en blanco
-      Destino := (others => ' ');
-      --  Copiar el contenido desde el origen
-      Destino (Destino'First .. Destino'First + Origen'Length - 1) := Origen;
-   end Copiar_Campo;
-
-   --  Función privada: verificar si un campo está vacío o excede el límite
-   function Esta_En_Rango (Campo : String; Maximo : Integer) return Boolean is
-   begin
-      return Campo'Length > 0 and then Campo'Length <= Maximo;
-   end Esta_En_Rango;
-
-   function Crear_Cliente (
-      C         : out Cliente;
-      Cedula    : String;
+   function Crear_Cliente
+     (Cedula    : String;
       Nombre    : String;
       Apellido  : String;
       Direccion : String;
       Correo    : String;
-      Telefono  : String
-   ) return Boolean is
+      Telefono  : String;
+      Id_Cuenta : Id_Cuenta_Type)
+      return Cliente_Type
+   is
    begin
-      --  Validar que todos los campos sean válidos
-      if not Esta_En_Rango (Cedula, MAX_CEDULA) then
-         return False;
-      end if;
-
-      if not Esta_En_Rango (Nombre, MAX_NOMBRE) then
-         return False;
-      end if;
-
-      if not Esta_En_Rango (Apellido, MAX_APELLIDO) then
-         return False;
-      end if;
-
-      if not Esta_En_Rango (Direccion, MAX_DIRECCION) then
-         return False;
-      end if;
-
-      if not Esta_En_Rango (Correo, MAX_CORREO) then
-         return False;
-      end if;
-
-      if not Esta_En_Rango (Telefono, MAX_TELEFONO) then
-         return False;
-      end if;
-
-      --  Copiar los datos validados al record
-      Copiar_Campo (C.Cedula, Cedula);
-      Copiar_Campo (C.Nombre, Nombre);
-      Copiar_Campo (C.Apellido, Apellido);
-      Copiar_Campo (C.Direccion, Direccion);
-      Copiar_Campo (C.Correo, Correo);
-      Copiar_Campo (C.Telefono, Telefono);
-
-      return True;
+      return Cliente_Type'(
+         Cedula    => Cedula,
+         Nombre    => Nombres_Str.To_Bounded_String (Nombre),
+         Apellido  => Nombres_Str.To_Bounded_String (Apellido),
+         Direccion => Direccion_Str.To_Bounded_String (Direccion),
+         Correo    => Nombres_Str.To_Bounded_String (Correo),
+         Telefono  => Telefono_Str.To_Bounded_String (Telefono),
+         Id_Cuenta => Id_Cuenta
+      );
    end Crear_Cliente;
 
-   function Actualizar_Cliente (
-      C         : in out Cliente;
-      Nombre    : String;
-      Apellido  : String;
-      Direccion : String;
-      Correo    : String;
-      Telefono  : String
-   ) return Boolean is
+   function Get_Cedula (C : Cliente_Type) return String is
    begin
-      --  Validar que todos los campos sean válidos
-      if not Esta_En_Rango (Nombre, MAX_NOMBRE) then
-         return False;
-      end if;
+      return C.Cedula;
+   end Get_Cedula;
 
-      if not Esta_En_Rango (Apellido, MAX_APELLIDO) then
-         return False;
-      end if;
+   function Get_Nombre (C : Cliente_Type) return String is
+   begin
+      return Nombres_Str.To_String (C.Nombre);
+   end Get_Nombre;
 
-      if not Esta_En_Rango (Direccion, MAX_DIRECCION) then
-         return False;
-      end if;
+   function Get_Apellido (C : Cliente_Type) return String is
+   begin
+      return Nombres_Str.To_String (C.Apellido);
+   end Get_Apellido;
 
-      if not Esta_En_Rango (Correo, MAX_CORREO) then
-         return False;
-      end if;
+   function Get_Direccion (C : Cliente_Type) return String is
+   begin
+      return Direccion_Str.To_String (C.Direccion);
+   end Get_Direccion;
 
-      if not Esta_En_Rango (Telefono, MAX_TELEFONO) then
-         return False;
-      end if;
+   function Get_Correo (C : Cliente_Type) return String is
+   begin
+      return Nombres_Str.To_String (C.Correo);
+   end Get_Correo;
 
-      --  Actualizar los campos del cliente
-      Copiar_Campo (C.Nombre, Nombre);
-      Copiar_Campo (C.Apellido, Apellido);
-      Copiar_Campo (C.Direccion, Direccion);
-      Copiar_Campo (C.Correo, Correo);
-      Copiar_Campo (C.Telefono, Telefono);
+   function Get_Telefono (C : Cliente_Type) return String is
+   begin
+      return Telefono_Str.To_String (C.Telefono);
+   end Get_Telefono;
 
-      return True;
-   end Actualizar_Cliente;
+   function Get_Id_Cuenta (C : Cliente_Type) return Id_Cuenta_Type is
+   begin
+      return C.Id_Cuenta;
+   end Get_Id_Cuenta;
 
 end Clientes;
