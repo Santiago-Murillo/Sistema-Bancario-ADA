@@ -17,5 +17,6 @@ package Length is
    -- Valores por defecto
    DEFAULT_LIMITE_SOBREGIRO : constant := 2000.00;
    DEFAULT_INTERES_SOBREGIRO : constant := 2.00;
+   DEFAULT_TASA_INTERES_AHORROS : constant := 1.00;
 
 end Length;

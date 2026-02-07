@@ -14,8 +14,7 @@ package Cuenta_Ahorros is
      (Numero_Cuenta : String;
       Saldo         : Saldo_Ahorros_Type;
       Estado        : Cuentas.Estado_Type;
-      Cliente       : Cuentas.Id_Cliente_Type;
-      Tasa_Interes  : Tasa_Interes_Type)
+      Cliente       : Cuentas.Id_Cliente_Type)
       return Cuenta_Ahorros_Type
    with
       Pre => Numero_Cuenta'Length = Cuentas.NUMERO_CUENTA_LEN;

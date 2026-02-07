@@ -4,15 +4,13 @@ package body Cuenta_Ahorros is
      (Numero_Cuenta : String;
       Saldo         : Saldo_Ahorros_Type;
       Estado        : Cuentas.Estado_Type;
-      Cliente       : Cuentas.Id_Cliente_Type;
-      Tasa_Interes  : Tasa_Interes_Type)
+      Cliente       : Cuentas.Id_Cliente_Type)
       return Cuenta_Ahorros_Type
    is
-      -- Creamos una cuenta base temporal para inicializar los campos heredados
       Base : constant Cuentas.Cuenta_Type :=
          Cuentas.Crear_Cuenta (Numero_Cuenta, Saldo, Estado, Cliente);
    begin
-      return (Base with Tasa_Interes => Tasa_Interes);
+      return (Base with Tasa_Interes => Length.DEFAULT_TASA_INTERES_AHORROS);
    end Crear_Cuenta_Ahorros;
 
    function Get_Tasa_Interes (C : Cuenta_Ahorros_Type) return Tasa_Interes_Type is
