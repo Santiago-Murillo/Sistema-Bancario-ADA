@@ -12,13 +12,11 @@ package Cuentas is
    type Cuenta_Type is tagged private;
 
    function Crear_Cuenta
-     (Numero_Cuenta : String;
-      Saldo         : Saldo_Type;
+     (Saldo         : Saldo_Type;
       Estado        : Estado_Type)
-      return Cuenta_Type
-   with
-      Pre => Numero_Cuenta'Length = NUMERO_CUENTA_LEN;
+      return Cuenta_Type;
 
+   function Get_Id (C : Cuenta_Type) return Natural;
    function Get_Numero_Cuenta (C : Cuenta_Type) return String;
    function Get_Saldo (C : Cuenta_Type) return Saldo_Type;
    function Get_Fecha_Apertura (C : Cuenta_Type) return Ada.Calendar.Time;
@@ -31,11 +29,11 @@ package Cuentas is
 private
 
    type Cuenta_Type is tagged record
+      Id             : Natural;
       Numero_Cuenta  : String (1 .. NUMERO_CUENTA_LEN);
       Saldo          : Saldo_Type;
       Fecha_Apertura : Ada.Calendar.Time;
       Estado         : Estado_Type;
-      --  Cliente        : Id_Cliente_Type; -- Eliminado
    end record;
 
 end Cuentas;

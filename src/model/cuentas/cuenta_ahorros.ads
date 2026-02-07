@@ -11,12 +11,9 @@ package Cuenta_Ahorros is
       Dynamic_Predicate => Saldo_Ahorros_Type >= 0.0;
 
    function Crear_Cuenta_Ahorros
-     (Numero_Cuenta : String;
-      Saldo         : Saldo_Ahorros_Type;
+     (Saldo         : Saldo_Ahorros_Type;
       Estado        : Cuentas.Estado_Type)
-      return Cuenta_Ahorros_Type
-   with
-      Pre => Numero_Cuenta'Length = Cuentas.NUMERO_CUENTA_LEN;
+      return Cuenta_Ahorros_Type;
 
    function Get_Tasa_Interes (C : Cuenta_Ahorros_Type) return Tasa_Interes_Type;
 

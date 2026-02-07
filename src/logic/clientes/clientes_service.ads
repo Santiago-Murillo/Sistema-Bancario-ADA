@@ -17,7 +17,6 @@ package Clientes_Service is
       Correo        : String;
       Telefono      : String;
       Tipo_Cuenta   : Tipo_Cuenta_Enum;
-      Numero_Cuenta : String;
       Saldo_Inicial : Cuentas.Saldo_Type)
    with
       Pre =>
@@ -26,8 +25,7 @@ package Clientes_Service is
          Apellido'Length > 0 and Apellido'Length <= Clientes.MAX_APELLIDO and
          Direccion'Length > 0 and Direccion'Length <= Clientes.MAX_DIRECCION and
          Correo'Length > 0 and Correo'Length <= Clientes.MAX_CORREO and
-         Telefono'Length > 0 and Telefono'Length <= Clientes.MAX_TELEFONO and
-         Numero_Cuenta'Length = Cuentas.NUMERO_CUENTA_LEN;
+         Telefono'Length > 0 and Telefono'Length <= Clientes.MAX_TELEFONO;
 
    procedure Actualizar_Cliente
      (Cliente    : in out Clientes.Cliente_Type;

@@ -21,7 +21,6 @@ begin
          Correo        => "juan@mail.com",
          Telefono      => "0999999999",
          Tipo_Cuenta   => Clientes_Service.Ahorros,
-         Numero_Cuenta => "1234567890",
          Saldo_Inicial => 500.00);
 
       -- Si llega aquí, es que no hubo excepción

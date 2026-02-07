@@ -9,13 +9,11 @@ package Cuenta_Corriente is
    type Cuenta_Corriente_Type is new Cuentas.Cuenta_Type with private;
 
    function Crear_Cuenta_Corriente
-     (Numero_Cuenta     : String;
-      Saldo             : Cuentas.Saldo_Type;
+     (Saldo             : Cuentas.Saldo_Type;
       Estado            : Cuentas.Estado_Type)
       return Cuenta_Corriente_Type
    with
       Pre =>
-         Numero_Cuenta'Length = Cuentas.NUMERO_CUENTA_LEN and
          Saldo >= -Cuentas.Saldo_Type (Length.DEFAULT_LIMITE_SOBREGIRO);
 
    function Get_Limite_Sobregiro (C : Cuenta_Corriente_Type) return Limite_Sobregiro_Type;
