@@ -9,7 +9,7 @@ package Cuentas is
    type Estado_Type is (Activa, Bloqueada);
    subtype Id_Cliente_Type is Natural range 1 .. Natural'Last;
 
-   type Cuenta_Type is private;
+   type Cuenta_Type is tagged private;
 
    function Crear_Cuenta
      (Numero_Cuenta : String;
@@ -31,7 +31,7 @@ package Cuentas is
 
 private
 
-   type Cuenta_Type is record
+   type Cuenta_Type is tagged record
       Numero_Cuenta  : String (1 .. NUMERO_CUENTA_LEN);
       Saldo          : Saldo_Type;
       Fecha_Apertura : Ada.Calendar.Time;

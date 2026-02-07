@@ -10,6 +10,7 @@ package Length is
 
    MIN_SALDO         : constant := -2000.00;
    MAX_SALDO         : constant := 1_000_000.00;
+   MAX_TASA_INTERES  : constant := 100.00;
    MAX_TRANSACCION : constant := 5000.00;
 
 end Length;
