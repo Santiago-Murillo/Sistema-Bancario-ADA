@@ -7,9 +7,11 @@ package Cuentas is
 
    type Saldo_Type is delta 0.01 range Length.MIN_SALDO .. Length.MAX_SALDO;
    type Estado_Type is (Activa, Bloqueada);
-   --  subtype Id_Cliente_Type is Natural range 1 .. Natural'Last; -- Eliminado
+
+   Saldo_Insuficiente : exception;
 
    type Cuenta_Type is tagged private;
+   type Cuenta_Access is access all Cuenta_Type'Class;
 
    function Crear_Cuenta
      (Saldo         : Saldo_Type;
@@ -25,6 +27,9 @@ package Cuentas is
 
    procedure Set_Saldo (C : in out Cuenta_Type; Saldo : Saldo_Type);
    procedure Set_Estado (C : in out Cuenta_Type; Estado : Estado_Type);
+
+   procedure Acreditar (C : in out Cuenta_Type; Monto : Saldo_Type);
+   procedure Debitar (C : in out Cuenta_Type; Monto : Saldo_Type);
 
 private
 

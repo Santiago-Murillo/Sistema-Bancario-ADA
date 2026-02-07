@@ -1,16 +1,17 @@
 
 with Movimientos;
-with Model.Cuentas;
+with Cuentas;
 with Length;
 
 package Movimiento_Service is
+   use type Movimientos.Dinero_Type;
 
    -- TODO: Definir excepciones específicas (también en el diccionario)
    Transaccion_Invalida : exception;
 
    procedure Deposito
      (Id_Mov          : Movimientos.Id_Movimiento_Type;
-      Cuenta_Destino : in out Model.Cuentas.Cuenta_Type;
+      Cuenta_Destino : in out Cuentas.Cuenta_Type'Class;
       Monto           : Movimientos.Dinero_Type;
       Descripcion     : String;
       Resultado       : out Movimientos.Movimiento_Type)
@@ -21,7 +22,7 @@ package Movimiento_Service is
 
    procedure Retiro
      (Id_Mov       : Movimientos.Id_Movimiento_Type;
-      Cuenta_Origen : in out Model.Cuentas.Cuenta_Type;
+      Cuenta_Origen : in out Cuentas.Cuenta_Type'Class;
       Monto        : Movimientos.Dinero_Type;
       Descripcion  : String;
       Resultado    : out Movimientos.Movimiento_Type)
@@ -33,14 +34,14 @@ package Movimiento_Service is
 
    procedure Transferencia
      (Id_Mov        : Movimientos.Id_Movimiento_Type;
-      Cuenta_Origen  : in out Model.Cuentas.Cuenta_Type;
-      Cuenta_Destino : in out Model.Cuentas.Cuenta_Type;
+      Cuenta_Origen  : in out Cuentas.Cuenta_Type'Class;
+      Cuenta_Destino : in out Cuentas.Cuenta_Type'Class;
       Monto          : Movimientos.Dinero_Type;
       Descripcion    : String;
       Resultado      : out Movimientos.Movimiento_Type)
    with
       Pre =>
          Monto > 0.0 and
-         Model.Cuentas.Get_Id(Cuenta_Origen) /= Model.Cuentas.Get_Id(Cuenta_Destino);
+         Cuentas.Get_Id(Cuenta_Origen) /= Cuentas.Get_Id(Cuenta_Destino);
 
 end Movimiento_Service;

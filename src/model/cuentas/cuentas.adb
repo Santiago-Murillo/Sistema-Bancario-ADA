@@ -71,4 +71,17 @@ package body Cuentas is
       C.Estado := Estado;
    end Set_Estado;
 
+   procedure Acreditar (C : in out Cuenta_Type; Monto : Saldo_Type) is
+   begin
+      C.Saldo := C.Saldo + Monto;
+   end Acreditar;
+
+   procedure Debitar (C : in out Cuenta_Type; Monto : Saldo_Type) is
+   begin
+      if C.Saldo < Monto then
+         raise Saldo_Insuficiente;
+      end if;
+      C.Saldo := C.Saldo - Monto;
+   end Debitar;
+
 end Cuentas;

@@ -14,8 +14,17 @@ package body Movimientos is
       Ahora        : constant Ada.Calendar.Time := Ada.Calendar.Clock;
    begin
       case Tipo is
-         when Deposito | Interes =>
-            return (Tipo              => Tipo,
+         when Deposito =>
+            return (Tipo              => Deposito,
+                    Id                => Id,
+                    Monto             => Monto,
+                    Fecha             => Ahora,
+                    Descripcion       => Desc_Bounded,
+                    Monto_Maximo      => Monto_Maximo,
+                    Cuenta_Destino_Solo => Cuenta_Destino);
+
+         when Interes =>
+            return (Tipo              => Interes,
                     Id                => Id,
                     Monto             => Monto,
                     Fecha             => Ahora,
@@ -24,7 +33,7 @@ package body Movimientos is
                     Cuenta_Destino_Solo => Cuenta_Destino);
 
          when Retiro =>
-            return (Tipo             => Tipo,
+            return (Tipo             => Retiro,
                     Id               => Id,
                     Monto            => Monto,
                     Fecha            => Ahora,
@@ -33,7 +42,7 @@ package body Movimientos is
                     Cuenta_Origen_Solo => Cuenta_Origen);
 
          when Transferencia =>
-            return (Tipo                => Tipo,
+            return (Tipo                => Transferencia,
                     Id                  => Id,
                     Monto               => Monto,
                     Fecha               => Ahora,

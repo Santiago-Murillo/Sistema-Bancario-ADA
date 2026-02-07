@@ -2,92 +2,125 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Exceptions;
 with Clientes;
 with Clientes_Service;
+with Cuentas;
+with Movimiento_Service;
+with Movimientos;
 
 procedure Main is
-   C : Clientes.Cliente_Type;
-begin
-   -------------------------------------------------------
-   -- 1. Prueba de creación de cliente
-   -------------------------------------------------------
-   Put_Line ("--- Intentando crear cliente ---");
+   Cliente_1, Cliente_2 : Clientes.Cliente_Type;
+   Cuenta_1, Cuenta_2   : Cuentas.Cuenta_Access;
 
+   -- Variables for results with specific discriminants
+   Mov_Res_Dep : Movimientos.Movimiento_Type (Movimientos.Deposito);
+   Mov_Res_Ret : Movimientos.Movimiento_Type (Movimientos.Retiro);
+   Mov_Res_Tra : Movimientos.Movimiento_Type (Movimientos.Transferencia);
+begin
+   Put_Line ("--- Sistema Bancario - Inicio ---");
+
+   -------------------------------------------------------
+   -- 1. Crear Cliente 1
+   -------------------------------------------------------
    begin
       Clientes_Service.Crear_Cliente
-        (Resultado     => C,
+        (Resultado     => Cliente_1,
+         Cuenta_Nueva  => Cuenta_1,
          Cedula        => "0102030405",
-         Nombre        => "Armando",
-         Apellido      => "Paredes",
-         Direccion     => "Av. Central",
+         Nombre        => "Juan",
+         Apellido      => "Perez",
+         Direccion     => "Calle 1",
          Correo        => "juan@mail.com",
          Telefono      => "0999999999",
          Tipo_Cuenta   => Clientes_Service.Ahorros,
+         Saldo_Inicial => 1000.00);
+
+      Put_Line ("Cliente 1 creado: " & Clientes.Get_Nombre (Cliente_1) &
+                " (Saldo: " &
+                Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_1.all)) &
+                ")");
+   exception
+      when E : others =>
+         Put_Line ("Error creando Cliente 1: " &
+                   Ada.Exceptions.Exception_Message (E));
+         return;
+   end;
+
+   -------------------------------------------------------
+   -- 2. Crear Cliente 2
+   -------------------------------------------------------
+   begin
+      Clientes_Service.Crear_Cliente
+        (Resultado     => Cliente_2,
+         Cuenta_Nueva  => Cuenta_2,
+         Cedula        => "0203040506",
+         Nombre        => "Maria",
+         Apellido      => "Lopez",
+         Direccion     => "Calle 2",
+         Correo        => "maria@mail.com",
+         Telefono      => "0988888888",
+         Tipo_Cuenta   => Clientes_Service.Corriente,
          Saldo_Inicial => 500.00);
 
-      -- Si llega aquí, es que no hubo excepción
-      Put_Line ("Cliente creado correctamente.");
-
+      Put_Line ("Cliente 2 creado: " & Clientes.Get_Nombre (Cliente_2) &
+                " (Saldo: " &
+                Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_2.all)) &
+                ")");
    exception
-      when Clientes_Service.Datos_Invalidos =>
-         Put_Line ("Error: Datos inválidos al crear cliente.");
-         return; -- Salimos si no se pudo crear
+      when E : others =>
+         Put_Line ("Error creando Cliente 2: " &
+                   Ada.Exceptions.Exception_Message (E));
+         return;
    end;
 
+   Put_Line ("");
+
    -------------------------------------------------------
-   -- 2. Mostrar datos iniciales
+   -- 3. Depósito en Cuenta 1
+   -------------------------------------------------------
+   Put_Line ("--- Realizando Deposito en Cuenta 1 (+100.00) ---");
+   Movimiento_Service.Deposito
+     (Id_Mov         => 1,
+      Cuenta_Destino => Cuenta_1.all,
+      Monto          => 100.00,
+      Descripcion    => "Deposito inicial",
+      Resultado      => Mov_Res_Dep);
+
+   Put_Line ("Nuevo Saldo Cliente 1: " &
+             Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_1.all)));
+
+   -------------------------------------------------------
+   -- 4. Retiro en Cuenta 1
    -------------------------------------------------------
    Put_Line ("");
-   Put_Line ("--- Datos iniciales ---");
-   Put_Line ("Nombre   : " & Clientes.Get_Nombre (C));
-   Put_Line ("Apellido : " & Clientes.Get_Apellido (C));
-   Put_Line ("Correo   : " & Clientes.Get_Correo (C));
+   Put_Line ("--- Realizando Retiro en Cuenta 1 (-50.00) ---");
+   Movimiento_Service.Retiro
+     (Id_Mov        => 2,
+      Cuenta_Origen => Cuenta_1.all,
+      Monto         => 50.00,
+      Descripcion   => "Retiro para gastos",
+      Resultado     => Mov_Res_Ret);
+
+   Put_Line ("Nuevo Saldo Cliente 1: " &
+             Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_1.all)));
 
    -------------------------------------------------------
-   -- 3. Prueba de actualización de cliente
-   -------------------------------------------------------
-   Put_Line ("");
-   Put_Line ("--- Actualizando cliente ---");
-
-   Clientes_Service.Actualizar_Cliente
-     (Cliente   => C,
-      Nombre    => "Juan Carlos",
-      Apellido  => "Perez Gomez",
-      Direccion => "Av. Siempre Viva 123",
-      Correo    => "juan.c@mail.com",
-      Telefono  => "0988888888");
-
-   Put_Line ("Cliente actualizado correctamente.");
-
-   -------------------------------------------------------
-   -- 4. Mostrar datos actualizados
-   -------------------------------------------------------
-   Put_Line ("--- Datos actualizados ---");
-   Put_Line ("Nombre   : " & Clientes.Get_Nombre (C));
-   Put_Line ("Apellido : " & Clientes.Get_Apellido (C));
-   Put_Line ("Correo   : " & Clientes.Get_Correo (C));
-
-   -------------------------------------------------------
-   -- 5. Prueba de validación (debe lanzar excepción)
+   -- 5. Transferencia de Cuenta 1 a Cuenta 2
    -------------------------------------------------------
    Put_Line ("");
-   Put_Line ("--- Prueba de validación (Nombre vacío) ---");
+   Put_Line ("--- Transferencia de Cliente 1 a Cliente 2 (200.00) ---");
+   Movimiento_Service.Transferencia
+     (Id_Mov         => 3,
+      Cuenta_Origen  => Cuenta_1.all,
+      Cuenta_Destino => Cuenta_2.all,
+      Monto          => 200.00,
+      Descripcion    => "Pago de deuda",
+      Resultado      => Mov_Res_Tra);
 
-   begin
-      Clientes_Service.Actualizar_Cliente
-        (Cliente   => C,
-         Nombre    => "", -- ESTO DEBE FALLAR
-         Apellido  => "Perez",
-         Direccion => "Av. Central",
-         Correo    => "mail@test.com",
-         Telefono  => "0999999999");
+   Put_Line ("Saldo Final Cliente 1: " &
+             Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_1.all)));
+   Put_Line ("Saldo Final Cliente 2: " &
+             Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_2.all)));
 
-      -- Si llega aquí, la validación falló (malo)
-      Put_Line ("FALLO: Se permitió actualizar con nombre vacío.");
-
-   exception
-      when E : Clientes_Service.Datos_Invalidos =>
-         -- Si entra aquí, la validación funcionó (bueno)
-         Put_Line ("EXITO: Se capturó la excepción esperada.");
-         Put_Line ("Mensaje de error: " & Ada.Exceptions.Exception_Message (E));
-   end;
+   Put_Line ("");
+   Put_Line ("--- Fin de operaciones ---");
 
 end Main;

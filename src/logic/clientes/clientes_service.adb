@@ -14,6 +14,7 @@ package body Clientes_Service is
 
    procedure Crear_Cliente
      (Resultado     : out Cli.Cliente_Type;
+      Cuenta_Nueva  : out Cuentas.Cuenta_Access;
       Cedula        : String;
       Nombre        : String;
       Apellido      : String;
@@ -23,8 +24,6 @@ package body Clientes_Service is
       Tipo_Cuenta   : Tipo_Cuenta_Enum;
       Saldo_Inicial : Cuentas.Saldo_Type)
    is
-      C_Ahorro    : Cuenta_Ahorros.Cuenta_Ahorros_Type;
-      C_Corriente : Cuenta_Corriente.Cuenta_Corriente_Type;
       Id_Cuenta_Generada : Cli.Id_Cuenta_Type;
    begin
       if not Esta_En_Rango (Cedula, Cli.MAX_CEDULA) then
@@ -60,19 +59,20 @@ package body Clientes_Service is
                raise Datos_Invalidos with "El saldo inicial para cuenta de ahorros no puede ser negativo";
             end if;
 
-            C_Ahorro := Cuenta_Ahorros.Crear_Cuenta_Ahorros
-              (Saldo         => Cuenta_Ahorros.Saldo_Ahorros_Type (Saldo_Inicial),
-               Estado        => Cuentas.Activa);
-
-            Id_Cuenta_Generada := C_Ahorro.Get_Id;
+            Cuenta_Nueva := new Cuenta_Ahorros.Cuenta_Ahorros_Type'(
+               Cuenta_Ahorros.Crear_Cuenta_Ahorros
+                 (Saldo         => Cuenta_Ahorros.Saldo_Ahorros_Type (Saldo_Inicial),
+                  Estado        => Cuentas.Activa));
 
          when Corriente =>
-            C_Corriente := Cuenta_Corriente.Crear_Cuenta_Corriente
-              (Saldo         => Saldo_Inicial,
-               Estado        => Cuentas.Activa);
+            Cuenta_Nueva := new Cuenta_Corriente.Cuenta_Corriente_Type'(
+               Cuenta_Corriente.Crear_Cuenta_Corriente
+                 (Saldo         => Saldo_Inicial,
+                  Estado        => Cuentas.Activa));
 
-            Id_Cuenta_Generada := C_Corriente.Get_Id;
       end case;
+
+      Id_Cuenta_Generada := Cuenta_Nueva.Get_Id;
 
       --  Usar la función Crear_Cliente del modelo, asignando el ID de la cuenta creada
       Resultado := Cli.Crear_Cliente

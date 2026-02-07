@@ -10,6 +10,7 @@ package Clientes_Service is
 
    procedure Crear_Cliente
      (Resultado     : out Clientes.Cliente_Type;
+      Cuenta_Nueva  : out Cuentas.Cuenta_Access;
       Cedula        : String;
       Nombre        : String;
       Apellido      : String;
