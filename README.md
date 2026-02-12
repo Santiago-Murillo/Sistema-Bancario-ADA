@@ -23,12 +23,12 @@ Este proyecto implementa un sistema bancario básico en el lenguaje de programac
 | Módulo | Estado |
 |--------|--------|
 | Clientes | ✅ Implementado |
-| Cuentas | ⏳ Pendiente |
-| Cuenta de Ahorros | ⏳ Pendiente |
-| Cuenta Corriente | ⏳ Pendiente |
+| Cuentas | ⚠️ En proceso |
+| Cuenta de Ahorros | ⚠️ En proceso  |
+| Cuenta Corriente | ⚠️ En proceso  |
 | Tarjetas de Crédito | ⏳ Pendiente |
-| Movimientos | ⏳ Pendiente |
-| Entidad Financiera | ⏳ Pendiente |
+| Movimientos | ⚠️ En proceso  |
+| Entidad Financiera | ❌ Eliminado |
 
 ## Requisitos
 
