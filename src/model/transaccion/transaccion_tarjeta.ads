@@ -31,7 +31,7 @@ package Transaccion_Tarjeta is
                        Monto   : Saldo_Type)
      with
        Pre => Monto <= Get_Credito_Disponible (Tarjeta),
-       Post => Get_Saldo_Utilizado (Tarjeta) = Get_Saldo_Utilizado (Tarjeta)'Old + Monto;
+       Post => Get_Saldo_Utilizado (Tarjeta) = Get_Saldo_Utilizado (Tarjeta'Old) + Monto;
 
    -- Estrategia de Pago
    type Pago_Tarjeta_Strategy is new I_Transaccion_Tarjeta_Strategy with null record;
@@ -45,6 +45,6 @@ package Transaccion_Tarjeta is
                        Monto   : Saldo_Type)
      with
        Pre => Monto <= Get_Saldo_Utilizado (Tarjeta),
-       Post => Get_Saldo_Utilizado (Tarjeta) = Get_Saldo_Utilizado (Tarjeta)'Old - Monto;
+       Post => Get_Saldo_Utilizado (Tarjeta) = Get_Saldo_Utilizado (Tarjeta'Old) - Monto;
 
 end Transaccion_Tarjeta;
