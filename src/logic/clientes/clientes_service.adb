@@ -132,13 +132,11 @@ package body Clientes_Service is
      (Cliente           : in out Cli.Cliente_Type;
       Tarjeta_Nueva     : out Tarjeta_Credito.Tarjeta_Credito_Access)
    is
-      Cedula_Cliente : constant String := Cli.Get_Cedula (Cliente);
    begin
       Tarjeta_Nueva := Tarjeta_Credito_Service.Crear_Tarjeta
-        (Cedula_Cliente       => Cedula_Cliente,
-         Tasa_Interes_Mensual => Length.DEFAULT_TASA_INTERES_TARJETA);
+        (Tasa_Interes_Mensual => Length.DEFAULT_TASA_INTERES_TARJETA);
 
-      Cli.Set_Id_Tarjeta (Cliente, Tarjeta_Credito.Get_Id (Tarjeta_Nueva.all));
+      Cli.Set_Numero_Tarjeta (Cliente, Tarjeta_Credito.Get_Id (Tarjeta_Nueva.all));
    end Asociar_Tarjeta_Credito;
 
    procedure Crear_Cliente_Con_Tarjeta

@@ -17,19 +17,12 @@ package Tarjeta_Credito_Service is
    -- === OPERACIONES CRUD ===
 
    function Crear_Tarjeta
-     (Cedula_Cliente        : String;
-      Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
-      return Tarjeta_Credito_Access
-   with
-      Pre => Cedula_Cliente'Length > 0 and Cedula_Cliente'Length <= Length.MAX_ID;
+     (Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
+      return Tarjeta_Credito_Access;
 
    function Obtener_Tarjeta (Id_Tarjeta : Natural) return Tarjeta_Credito_Access
    with
       Pre => Id_Tarjeta > 0;
-
-   function Obtener_Tarjeta_Por_Cliente (Cedula_Cliente : String) return Tarjeta_Credito_Access
-   with
-      Pre => Cedula_Cliente'Length > 0;
 
    procedure Actualizar_Limite_Credito
      (Id_Tarjeta    : Natural;
@@ -63,8 +56,5 @@ package Tarjeta_Credito_Service is
    function Consultar_Estado_Tarjeta (Id_Tarjeta : Natural) return String
    with
       Pre => Id_Tarjeta > 0;
-
-   -- Utilidad para validaciones
-   function Tiene_Tarjeta (Cedula_Cliente : String) return Boolean;
 
 end Tarjeta_Credito_Service;

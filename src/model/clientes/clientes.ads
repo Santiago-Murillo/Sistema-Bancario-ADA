@@ -45,9 +45,9 @@ package Clientes is
    function Get_Correo (C : Cliente_Type) return String;
    function Get_Telefono (C : Cliente_Type) return String;
    function Get_Numero_Cuenta (C : Cliente_Type) return Numero_Cuenta_Type;
-   function Get_Id_Tarjeta (C : Cliente_Type) return Natural;
+   function Get_Numero_Tarjeta (C : Cliente_Type) return Natural;
 
-   procedure Set_Id_Tarjeta (C : in out Cliente_Type; Id_Tarjeta : Natural);
+   procedure Set_Numero_Tarjeta (C : in out Cliente_Type; Numero_Tarjeta : Natural);
 
 private
 
@@ -59,7 +59,7 @@ private
       Correo        : Nombres_Str.Bounded_String;
       Telefono      : Telefono_Str.Bounded_String;
       Numero_Cuenta : Numero_Cuenta_Type;
-      Id_Tarjeta    : Natural := 0;  -- 0 = sin tarjeta
+      Numero_Tarjeta : Natural := 0;  -- 0 = sin tarjeta
    end record;
 
 end Clientes;

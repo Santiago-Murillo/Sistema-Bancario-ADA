@@ -12,13 +12,11 @@ package body Tarjeta_Credito is
 
    -- Constructor
    function Crear_Tarjeta_Credito
-     (Cedula_Cliente        : String;
-      Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
+     (Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
       return Tarjeta_Credito_Type
    is
       use Ada.Calendar;
       use Numero_Tarjeta_Str;
-      use Cedula_Str;
 
       Tarjeta      : Tarjeta_Credito_Type;
       Numero       : String (1 .. Length.MAX_NUMERO_TARJETA);
@@ -42,7 +40,6 @@ package body Tarjeta_Credito is
       Tarjeta.Fecha_Emision := Ahora;
       Tarjeta.Fecha_Vencimiento := Ahora + Tres_Anios;
       Tarjeta.Tasa_Interes_Mensual := Tasa_Interes_Mensual;
-      Tarjeta.Cedula_Cliente := To_Bounded_String (Cedula_Cliente);
 
       return Tarjeta;
    end Crear_Tarjeta_Credito;
@@ -82,11 +79,6 @@ package body Tarjeta_Credito is
    begin
       return T.Tasa_Interes_Mensual;
    end Get_Tasa_Interes_Mensual;
-
-   function Get_Cedula_Cliente (T : Tarjeta_Credito_Type) return String is
-   begin
-      return Cedula_Str.To_String (T.Cedula_Cliente);
-   end Get_Cedula_Cliente;
 
    -- Operaciones de consulta
    function Get_Credito_Disponible (T : Tarjeta_Credito_Type) return Saldo_Type is

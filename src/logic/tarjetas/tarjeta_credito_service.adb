@@ -15,12 +15,11 @@ package body Tarjeta_Credito_Service is
    -- === OPERACIONES CRUD ===
 
    function Crear_Tarjeta
-     (Cedula_Cliente        : String;
-      Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
+     (Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
       return Tarjeta_Credito_Access
    is
       Nueva_Tarjeta : constant Tarjeta_Credito_Access :=
-        new Tarjeta_Credito_Type'(Crear_Tarjeta_Credito (Cedula_Cliente, Tasa_Interes_Mensual));
+        new Tarjeta_Credito_Type'(Crear_Tarjeta_Credito (Tasa_Interes_Mensual));
    begin
       Tarjetas_Store.Append (Nueva_Tarjeta);
       return Nueva_Tarjeta;
@@ -35,16 +34,6 @@ package body Tarjeta_Credito_Service is
       end loop;
       raise Tarjeta_No_Encontrada with "Tarjeta con ID" & Id_Tarjeta'Image & " no encontrada";
    end Obtener_Tarjeta;
-
-   function Obtener_Tarjeta_Por_Cliente (Cedula_Cliente : String) return Tarjeta_Credito_Access is
-   begin
-      for Tarjeta of Tarjetas_Store loop
-         if Get_Cedula_Cliente (Tarjeta.all) = Cedula_Cliente then
-            return Tarjeta;
-         end if;
-      end loop;
-      raise Tarjeta_No_Encontrada with "Cliente con cedula " & Cedula_Cliente & " no tiene tarjeta";
-   end Obtener_Tarjeta_Por_Cliente;
 
    procedure Actualizar_Limite_Credito
      (Id_Tarjeta    : Natural;
@@ -149,15 +138,5 @@ package body Tarjeta_Credito_Service is
              "Tasa Interes Mensual: " & Get_Tasa_Interes_Mensual (Tarjeta.all)'Image & "%" & ASCII.LF &
              "Vencida: " & (if Esta_Vencida (Tarjeta.all) then "SI" else "NO");
    end Consultar_Estado_Tarjeta;
-
-   function Tiene_Tarjeta (Cedula_Cliente : String) return Boolean is
-   begin
-      for Tarjeta of Tarjetas_Store loop
-         if Get_Cedula_Cliente (Tarjeta.all) = Cedula_Cliente then
-            return True;
-         end if;
-      end loop;
-      return False;
-   end Tiene_Tarjeta;
 
 end Tarjeta_Credito_Service;
