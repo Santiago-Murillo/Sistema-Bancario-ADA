@@ -1,12 +1,8 @@
 with Cuentas;
 with Transaccion;
+with Cuenta_Estado;
 
 package Cuentas_Service is
-
-   -- Service: contiene la lógica de negocio relacionada con Cuentas
-   -- Separación de responsabilidades: el modelo solo tiene datos,
-   -- el service tiene la lógica de negocio
-
    -- Operaciones de negocio sobre el estado
    procedure Bloquear_Cuenta (C : in out Cuentas.Cuenta_Type'Class);
 
@@ -20,5 +16,9 @@ package Cuentas_Service is
    function Puede_Realizar_Operacion
      (C         : Cuentas.Cuenta_Type'Class;
       Operacion : Transaccion.Tipo_Estrategia) return Boolean;
+
+private
+   Estado_Activa_Singleton    : constant Cuenta_Estado.Estado_Activa_Type := (null record);
+   Estado_Bloqueada_Singleton : constant Cuenta_Estado.Estado_Bloqueada_Type := (null record);
 
 end Cuentas_Service;

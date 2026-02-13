@@ -3,8 +3,6 @@ with Cuentas; use Cuentas;
 
 package body Cuentas_Service is
 
-   -- Lógica de negocio: maneja operaciones sobre el estado de cuentas
-
    procedure Bloquear_Cuenta (C : in out Cuentas.Cuenta_Type'Class) is
    begin
       Set_Estado (C, Bloqueada);
@@ -29,14 +27,12 @@ package body Cuentas_Service is
      (C         : Cuentas.Cuenta_Type'Class;
       Operacion : Transaccion.Tipo_Estrategia) return Boolean
    is
-      -- Lógica de negocio: crea el objeto de estado correspondiente
-      -- y delega la validación según el patrón State
-      Estado_Obj : I_Cuenta_Estado'Class :=
-        (if Get_Estado (C) = Activa
-         then I_Cuenta_Estado'Class (Estado_Activa_Type'(null record))
-         else I_Cuenta_Estado'Class (Estado_Bloqueada_Type'(null record)));
    begin
-      return Estado_Obj.Puede_Realizar_Operacion (Operacion);
+      if Get_Estado (C) = Activa then
+         return Estado_Activa_Singleton.Puede_Realizar_Operacion (Operacion);
+      else
+         return Estado_Bloqueada_Singleton.Puede_Realizar_Operacion (Operacion);
+      end if;
    end Puede_Realizar_Operacion;
 
 end Cuentas_Service;
