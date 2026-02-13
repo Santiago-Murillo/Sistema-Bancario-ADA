@@ -13,44 +13,13 @@ package body Movimientos is
       Desc_Bounded : constant Bounded_String := To_Bounded_String (Descripcion);
       Ahora        : constant Ada.Calendar.Time := Ada.Calendar.Clock;
    begin
-      case Tipo is
-         when Deposito =>
-            return (Tipo              => Deposito,
-                    Id                => Id,
-                    Monto             => Monto,
-                    Fecha             => Ahora,
-                    Descripcion       => Desc_Bounded,
-                    Monto_Maximo      => Monto_Maximo,
-                    Cuenta_Destino_Solo => Cuenta_Destino);
-
-         when Interes =>
-            return (Tipo              => Interes,
-                    Id                => Id,
-                    Monto             => Monto,
-                    Fecha             => Ahora,
-                    Descripcion       => Desc_Bounded,
-                    Monto_Maximo      => Monto_Maximo,
-                    Cuenta_Destino_Solo => Cuenta_Destino);
-
-         when Retiro =>
-            return (Tipo             => Retiro,
-                    Id               => Id,
-                    Monto            => Monto,
-                    Fecha            => Ahora,
-                    Descripcion      => Desc_Bounded,
-                    Monto_Maximo     => Monto_Maximo,
-                    Cuenta_Origen_Solo => Cuenta_Origen);
-
-         when Transferencia =>
-            return (Tipo                => Transferencia,
-                    Id                  => Id,
-                    Monto               => Monto,
-                    Fecha               => Ahora,
-                    Descripcion         => Desc_Bounded,
-                    Monto_Maximo        => Monto_Maximo,
-                    Cuenta_Origen_Transf  => Cuenta_Origen,
-                    Cuenta_Destino_Transf => Cuenta_Destino);
-      end case;
+      return (Id             => Id,
+              Monto          => Monto,
+              Fecha          => Ahora,
+              Descripcion    => Desc_Bounded,
+              Monto_Maximo   => Monto_Maximo,
+              Cuenta_Origen  => Cuenta_Origen,
+              Cuenta_Destino => Cuenta_Destino);
    end Crear_Movimiento;
 
    function Get_Id (M : Movimiento_Type) return Id_Movimiento_Type is
