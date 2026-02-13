@@ -5,7 +5,7 @@ package body Cuenta_Estado is
    overriding
    function Puede_Realizar_Operacion
      (Self      : Estado_Activa_Type;
-      Operacion : Tipo_Estrategia) return Boolean
+      Operacion : Estrategia_Transaccion) return Boolean
    is
       pragma Unreferenced (Self);
       pragma Unreferenced (Operacion);
@@ -17,7 +17,7 @@ package body Cuenta_Estado is
    overriding
    function Puede_Realizar_Operacion
      (Self      : Estado_Bloqueada_Type;
-      Operacion : Tipo_Estrategia) return Boolean
+      Operacion : Estrategia_Transaccion) return Boolean
    is
       pragma Unreferenced (Self);
    begin

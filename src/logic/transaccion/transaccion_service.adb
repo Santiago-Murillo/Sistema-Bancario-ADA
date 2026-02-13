@@ -35,8 +35,8 @@ package body Transaccion_Service is
          Monto            => Monto,
          Descripcion      => Descripcion,
          Tipo_Transaccion => Estrategia.Get_Tipo,
-         Cuenta_Origen    => Get_Id(C_Origen),
-         Cuenta_Destino   => Get_Id(C_Destino));
+         Cuenta_Origen    => Get_Numero_Cuenta (C_Origen),
+         Cuenta_Destino   => Get_Numero_Cuenta (C_Destino));
 
       Id_Movimiento := Ultimo_Id_Movimiento;
       Ultimo_Id_Movimiento := Ultimo_Id_Movimiento + 1;

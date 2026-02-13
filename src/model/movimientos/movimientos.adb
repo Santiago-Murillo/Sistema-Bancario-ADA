@@ -4,9 +4,9 @@ package body Movimientos is
      (Id            : Id_Movimiento_Type;
       Monto         : Dinero_Type;
       Descripcion   : String;
-      Tipo_Transaccion : Transaccion.Tipo_Estrategia;
-      Cuenta_Origen : Natural := 0;
-      Cuenta_Destino : Natural := 0)
+      Tipo_Transaccion : Transaccion.Estrategia_Transaccion;
+      Cuenta_Origen : Numero_Cuenta_Type;
+      Cuenta_Destino : Numero_Cuenta_Type)
       return Movimiento_Type
    is
       Desc_Bounded : constant Bounded_String := To_Bounded_String (Descripcion);
@@ -41,17 +41,17 @@ package body Movimientos is
       return To_String (M.Descripcion);
    end Get_Descripcion;
 
-   function Get_Origen (M : Movimiento_Type) return Natural is
+   function Get_Origen (M : Movimiento_Type) return Numero_Cuenta_Type is
    begin
       return M.Cuenta_Origen;
    end Get_Origen;
 
-   function Get_Destino (M : Movimiento_Type) return Natural is
+   function Get_Destino (M : Movimiento_Type) return Numero_Cuenta_Type is
    begin
       return M.Cuenta_Destino;
    end Get_Destino;
 
-   function Get_Tipo_Transaccion (M : Movimiento_Type) return Transaccion.Tipo_Estrategia is
+   function Get_Tipo_Transaccion (M : Movimiento_Type) return Transaccion.Estrategia_Transaccion is
    begin
       return M.Tipo_Transaccion;
    end Get_Tipo_Transaccion;

@@ -11,7 +11,7 @@ package Clientes is
    MAX_DIRECCION : constant := Length.MAX_TEXTO_LARGO;
    MAX_TELEFONO  : constant := Length.MAX_TELEFONO;
 
-   subtype Id_Cuenta_Type is Natural range 1 .. Natural'Last;
+   subtype Numero_Cuenta_Type is String (1 .. Length.MAX_NUMERO_CUENTA);
 
 
    package Nombres_Str is new Ada.Strings.Bounded.Generic_Bounded_Length (Max => MAX_NOMBRE);
@@ -21,13 +21,13 @@ package Clientes is
    type Cliente_Type is private;
 
    function Crear_Cliente
-     (Cedula    : String;
-      Nombre    : String;
-      Apellido  : String;
-      Direccion : String;
-      Correo    : String;
-      Telefono  : String;
-      Id_Cuenta : Id_Cuenta_Type)
+     (Cedula        : String;
+      Nombre        : String;
+      Apellido      : String;
+      Direccion     : String;
+      Correo        : String;
+      Telefono      : String;
+      Numero_Cuenta : Numero_Cuenta_Type)
       return Cliente_Type
    with
       Pre =>
@@ -44,7 +44,7 @@ package Clientes is
    function Get_Direccion (C : Cliente_Type) return String;
    function Get_Correo (C : Cliente_Type) return String;
    function Get_Telefono (C : Cliente_Type) return String;
-   function Get_Id_Cuenta (C : Cliente_Type) return Id_Cuenta_Type;
+   function Get_Numero_Cuenta (C : Cliente_Type) return Numero_Cuenta_Type;
    function Get_Id_Tarjeta (C : Cliente_Type) return Natural;
 
    procedure Set_Id_Tarjeta (C : in out Cliente_Type; Id_Tarjeta : Natural);
@@ -52,14 +52,14 @@ package Clientes is
 private
 
    type Cliente_Type is record
-      Cedula     : String (1 .. MAX_CEDULA);
-      Nombre     : Nombres_Str.Bounded_String;
-      Apellido   : Nombres_Str.Bounded_String;
-      Direccion  : Direccion_Str.Bounded_String;
-      Correo     : Nombres_Str.Bounded_String;
-      Telefono   : Telefono_Str.Bounded_String;
-      Id_Cuenta  : Id_Cuenta_Type;
-      Id_Tarjeta : Natural := 0;  -- 0 = sin tarjeta
+      Cedula        : String (1 .. MAX_CEDULA);
+      Nombre        : Nombres_Str.Bounded_String;
+      Apellido      : Nombres_Str.Bounded_String;
+      Direccion     : Direccion_Str.Bounded_String;
+      Correo        : Nombres_Str.Bounded_String;
+      Telefono      : Telefono_Str.Bounded_String;
+      Numero_Cuenta : Numero_Cuenta_Type;
+      Id_Tarjeta    : Natural := 0;  -- 0 = sin tarjeta
    end record;
 
 end Clientes;

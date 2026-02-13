@@ -15,7 +15,7 @@ package Cuentas_Service is
 
    function Puede_Realizar_Operacion
      (C         : Cuentas.Cuenta_Type'Class;
-      Operacion : Transaccion.Tipo_Estrategia) return Boolean;
+      Operacion : Transaccion.Estrategia_Transaccion) return Boolean;
 
 private
    Estado_Activa_Singleton    : constant Cuenta_Estado.Estado_Activa_Type := (null record);

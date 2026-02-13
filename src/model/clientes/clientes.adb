@@ -1,25 +1,25 @@
 package body Clientes is
 
    function Crear_Cliente
-     (Cedula    : String;
-      Nombre    : String;
-      Apellido  : String;
-      Direccion : String;
-      Correo    : String;
-      Telefono  : String;
-      Id_Cuenta : Id_Cuenta_Type)
+     (Cedula        : String;
+      Nombre        : String;
+      Apellido      : String;
+      Direccion     : String;
+      Correo        : String;
+      Telefono      : String;
+      Numero_Cuenta : Numero_Cuenta_Type)
       return Cliente_Type
    is
    begin
       return Cliente_Type'(
-         Cedula     => Cedula,
-         Nombre     => Nombres_Str.To_Bounded_String (Nombre),
-         Apellido   => Nombres_Str.To_Bounded_String (Apellido),
-         Direccion  => Direccion_Str.To_Bounded_String (Direccion),
-         Correo     => Nombres_Str.To_Bounded_String (Correo),
-         Telefono   => Telefono_Str.To_Bounded_String (Telefono),
-         Id_Cuenta  => Id_Cuenta,
-         Id_Tarjeta => 0  -- Sin tarjeta por defecto
+         Cedula        => Cedula,
+         Nombre        => Nombres_Str.To_Bounded_String (Nombre),
+         Apellido      => Nombres_Str.To_Bounded_String (Apellido),
+         Direccion     => Direccion_Str.To_Bounded_String (Direccion),
+         Correo        => Nombres_Str.To_Bounded_String (Correo),
+         Telefono      => Telefono_Str.To_Bounded_String (Telefono),
+         Numero_Cuenta => Numero_Cuenta,
+         Id_Tarjeta    => 0  -- Sin tarjeta por defecto
       );
    end Crear_Cliente;
 
@@ -53,10 +53,10 @@ package body Clientes is
       return Telefono_Str.To_String (C.Telefono);
    end Get_Telefono;
 
-   function Get_Id_Cuenta (C : Cliente_Type) return Id_Cuenta_Type is
+   function Get_Numero_Cuenta (C : Cliente_Type) return Numero_Cuenta_Type is
    begin
-      return C.Id_Cuenta;
-   end Get_Id_Cuenta;
+      return C.Numero_Cuenta;
+   end Get_Numero_Cuenta;
 
    function Get_Id_Tarjeta (C : Cliente_Type) return Natural is
    begin

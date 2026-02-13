@@ -25,7 +25,7 @@ package body Clientes_Service is
       Tipo_Cuenta   : Tipo_Cuenta_Enum;
       Saldo_Inicial : Cuentas.Saldo_Type)
    is
-      Id_Cuenta_Generada : Cli.Id_Cuenta_Type;
+      Numero_Cuenta_Generada : Cli.Numero_Cuenta_Type;
    begin
       if not Esta_En_Rango (Cedula, Cli.MAX_CEDULA) then
          raise Datos_Invalidos with "Cedula fuera de rango";
@@ -73,17 +73,16 @@ package body Clientes_Service is
 
       end case;
 
-      Id_Cuenta_Generada := Cuenta_Nueva.Get_Id;
+      Numero_Cuenta_Generada := Cuenta_Nueva.Get_Numero_Cuenta;
 
-      --  Usar la función Crear_Cliente del modelo, asignando el ID de la cuenta creada
       Resultado := Cli.Crear_Cliente
-        (Cedula    => Cedula,
-         Nombre    => Nombre,
-         Apellido  => Apellido,
-         Direccion => Direccion,
-         Correo    => Correo,
-         Telefono  => Telefono,
-         Id_Cuenta => Id_Cuenta_Generada);
+        (Cedula        => Cedula,
+         Nombre        => Nombre,
+         Apellido      => Apellido,
+         Direccion     => Direccion,
+         Correo        => Correo,
+         Telefono      => Telefono,
+         Numero_Cuenta => Numero_Cuenta_Generada);
    end Crear_Cliente;
 
    procedure Actualizar_Cliente
@@ -94,8 +93,8 @@ package body Clientes_Service is
       Correo    : String;
       Telefono  : String)
    is
-      Cedula_Actual : constant String := Cli.Get_Cedula (Cliente);
-      Id_Actual     : constant Cli.Id_Cuenta_Type := Cli.Get_Id_Cuenta (Cliente);
+      Cedula_Actual        : constant String := Cli.Get_Cedula (Cliente);
+      Numero_Cuenta_Actual : constant Cli.Numero_Cuenta_Type := Cli.Get_Numero_Cuenta (Cliente);
    begin
       if not Esta_En_Rango (Nombre, Cli.MAX_NOMBRE) then
          raise Datos_Invalidos with "Nombre fuera de rango";
@@ -119,13 +118,13 @@ package body Clientes_Service is
 
       --  Recrear el cliente con los nuevos datos
       Cliente := Cli.Crear_Cliente
-        (Cedula    => Cedula_Actual,
-         Nombre    => Nombre,
-         Apellido  => Apellido,
-         Direccion => Direccion,
-         Correo    => Correo,
-         Telefono  => Telefono,
-         Id_Cuenta => Id_Actual);
+        (Cedula        => Cedula_Actual,
+         Nombre        => Nombre,
+         Apellido      => Apellido,
+         Direccion     => Direccion,
+         Correo        => Correo,
+         Telefono      => Telefono,
+         Numero_Cuenta => Numero_Cuenta_Actual);
    end Actualizar_Cliente;
 
    -- Procedimientos para gestión de tarjetas de crédito
@@ -133,15 +132,12 @@ package body Clientes_Service is
      (Cliente           : in out Cli.Cliente_Type;
       Tarjeta_Nueva     : out Tarjeta_Credito.Tarjeta_Credito_Access)
    is
-      -- El Id_Cliente que usaremos es el Id de cuenta ya que el cliente no tiene ID propio
-      Id_Cliente_Ref : constant Natural := Natural (Cli.Get_Id_Cuenta (Cliente));
+      Cedula_Cliente : constant String := Cli.Get_Cedula (Cliente);
    begin
-      -- Crear la tarjeta usando el servicio de tarjetas
       Tarjeta_Nueva := Tarjeta_Credito_Service.Crear_Tarjeta
-        (Id_Cliente           => Id_Cliente_Ref,
+        (Cedula_Cliente       => Cedula_Cliente,
          Tasa_Interes_Mensual => Length.DEFAULT_TASA_INTERES_TARJETA);
 
-      -- Asociar el ID de la tarjeta al cliente
       Cli.Set_Id_Tarjeta (Cliente, Tarjeta_Credito.Get_Id (Tarjeta_Nueva.all));
    end Asociar_Tarjeta_Credito;
 

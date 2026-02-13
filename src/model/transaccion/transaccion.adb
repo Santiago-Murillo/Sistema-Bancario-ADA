@@ -1,6 +1,6 @@
 package body Transaccion is
 
-   function Get_Tipo (Self : Deposito_Strategy) return Tipo_Estrategia is
+   function Get_Tipo (Self : Deposito_Strategy) return Estrategia_Transaccion is
    begin
       return Deposito;
    end Get_Tipo;
@@ -13,7 +13,7 @@ package body Transaccion is
       Cuentas.Acreditar(Destino, Monto);
    end Ejecutar;
 
-   function Get_Tipo (Self : Transferencia_Strategy) return Tipo_Estrategia is
+   function Get_Tipo (Self : Transferencia_Strategy) return Estrategia_Transaccion is
    begin
       return Transferencia;
    end Get_Tipo;
@@ -27,7 +27,7 @@ package body Transaccion is
       Cuentas.Acreditar(Destino, Monto);
    end Ejecutar;
 
-   function Get_Tipo (Self : Retiro_Strategy) return Tipo_Estrategia is
+   function Get_Tipo (Self : Retiro_Strategy) return Estrategia_Transaccion is
    begin
       return Retiro;
    end Get_Tipo;

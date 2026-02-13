@@ -10,6 +10,7 @@ package Movimientos is
 
    subtype Id_Movimiento_Type is Natural range 1 .. Natural'Last;
    subtype Dinero_Type is Cuentas.Saldo_Type;
+   subtype Numero_Cuenta_Type is String (1 .. Length.MAX_NUMERO_CUENTA);
    package Descripcion_Str is new Ada.Strings.Bounded.Generic_Bounded_Length (Max => Length.MAX_TEXTO_LARGO);
    use Descripcion_Str;
 
@@ -19,9 +20,9 @@ package Movimientos is
      (Id           : Id_Movimiento_Type;
       Monto        : Dinero_Type;
       Descripcion  : String;
-      Tipo_Transaccion : Transaccion.Tipo_Estrategia;
-      Cuenta_Origen : Natural := 0;
-      Cuenta_Destino : Natural := 0)
+      Tipo_Transaccion : Transaccion.Estrategia_Transaccion;
+      Cuenta_Origen : Numero_Cuenta_Type;
+      Cuenta_Destino : Numero_Cuenta_Type)
       return Movimiento_Type
    with
       Pre =>
@@ -33,9 +34,9 @@ package Movimientos is
    function Get_Fecha (M : Movimiento_Type) return Ada.Calendar.Time;
    function Get_Descripcion (M : Movimiento_Type) return String;
 
-   function Get_Origen (M : Movimiento_Type) return Natural;
-   function Get_Destino (M : Movimiento_Type) return Natural;
-   function Get_Tipo_Transaccion (M : Movimiento_Type) return Transaccion.Tipo_Estrategia;
+   function Get_Origen (M : Movimiento_Type) return Numero_Cuenta_Type;
+   function Get_Destino (M : Movimiento_Type) return Numero_Cuenta_Type;
+   function Get_Tipo_Transaccion (M : Movimiento_Type) return Transaccion.Estrategia_Transaccion;
 
 private
 
@@ -44,9 +45,9 @@ private
       Monto        : Dinero_Type;
       Fecha        : Ada.Calendar.Time;
       Descripcion  : Bounded_String;
-      Tipo_Transaccion : Transaccion.Tipo_Estrategia;
-      Cuenta_Origen  : Natural;
-      Cuenta_Destino : Natural;
+      Tipo_Transaccion : Transaccion.Estrategia_Transaccion;
+      Cuenta_Origen  : Numero_Cuenta_Type;
+      Cuenta_Destino : Numero_Cuenta_Type;
    end record;
 
 end Movimientos;

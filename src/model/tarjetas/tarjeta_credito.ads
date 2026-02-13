@@ -12,17 +12,20 @@ package Tarjeta_Credito is
    package Numero_Tarjeta_Str is new Ada.Strings.Bounded.Generic_Bounded_Length
      (Max => Length.MAX_NUMERO_TARJETA);
 
+   package Cedula_Str is new Ada.Strings.Bounded.Generic_Bounded_Length
+     (Max => Length.MAX_ID);
+
    -- Tipo tagged independiente (NO hereda de Cuenta_Type)
    type Tarjeta_Credito_Type is tagged private;
    type Tarjeta_Credito_Access is access all Tarjeta_Credito_Type'Class;
 
    -- Constructor
    function Crear_Tarjeta_Credito
-     (Id_Cliente            : Natural;
+     (Cedula_Cliente        : String;
       Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
       return Tarjeta_Credito_Type
    with
-      Pre => Id_Cliente > 0;
+      Pre => Cedula_Cliente'Length > 0 and Cedula_Cliente'Length <= Length.MAX_ID;
 
    -- Getters
    function Get_Id (T : Tarjeta_Credito_Type) return Natural;
@@ -32,7 +35,7 @@ package Tarjeta_Credito is
    function Get_Fecha_Emision (T : Tarjeta_Credito_Type) return Ada.Calendar.Time;
    function Get_Fecha_Vencimiento (T : Tarjeta_Credito_Type) return Ada.Calendar.Time;
    function Get_Tasa_Interes_Mensual (T : Tarjeta_Credito_Type) return Tasa_Interes_Type;
-   function Get_Id_Cliente (T : Tarjeta_Credito_Type) return Natural;
+   function Get_Cedula_Cliente (T : Tarjeta_Credito_Type) return String;
 
    -- Operaciones de consulta
    function Get_Credito_Disponible (T : Tarjeta_Credito_Type) return Saldo_Type
@@ -77,7 +80,7 @@ private
       Fecha_Emision         : Ada.Calendar.Time;
       Fecha_Vencimiento     : Ada.Calendar.Time;
       Tasa_Interes_Mensual  : Tasa_Interes_Type := 0.0;
-      Id_Cliente            : Natural := 0;
+      Cedula_Cliente        : Cedula_Str.Bounded_String;
    end record;
 
 end Tarjeta_Credito;

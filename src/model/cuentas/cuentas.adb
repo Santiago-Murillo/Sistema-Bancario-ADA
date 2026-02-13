@@ -5,7 +5,7 @@ package body Cuentas is
 
    Ultimo_Numero : Natural := 0;
 
-   function Generar_Proximo_Numero return String is
+   function Generar_Numero_Cuenta return String is
       Num_Str : String := Natural'Image (Ultimo_Numero);
       -- 'Image retorna con un espacio al inicio para números positivos
       Trimmed : constant String := Ada.Strings.Fixed.Trim (Num_Str, Ada.Strings.Left);
@@ -18,7 +18,7 @@ package body Cuentas is
          Result := Trimmed (Trimmed'Last - NUMERO_CUENTA_LEN + 1 .. Trimmed'Last);
       end if;
       return Result;
-   end Generar_Proximo_Numero;
+   end Generar_Numero_Cuenta;
 
    function Crear_Cuenta
      (Saldo         : Saldo_Type;
@@ -28,18 +28,12 @@ package body Cuentas is
    begin
       Ultimo_Numero := Ultimo_Numero + 1;
       return Cuenta_Type'(
-         Id             => Ultimo_Numero,
-         Numero_Cuenta  => Generar_Proximo_Numero,
+         Numero_Cuenta  => Generar_Numero_Cuenta,
          Saldo          => Saldo,
          Fecha_Apertura => Ada.Calendar.Clock,
          Estado         => Estado
       );
    end Crear_Cuenta;
-
-   function Get_Id (C : Cuenta_Type) return Natural is
-   begin
-      return C.Id;
-   end Get_Id;
 
    function Get_Numero_Cuenta (C : Cuenta_Type) return String is
    begin

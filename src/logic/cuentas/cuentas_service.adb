@@ -25,7 +25,7 @@ package body Cuentas_Service is
 
    function Puede_Realizar_Operacion
      (C         : Cuentas.Cuenta_Type'Class;
-      Operacion : Transaccion.Tipo_Estrategia) return Boolean
+      Operacion : Transaccion.Estrategia_Transaccion) return Boolean
    is
    begin
       if Get_Estado (C) = Activa then

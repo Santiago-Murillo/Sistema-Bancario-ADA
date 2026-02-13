@@ -5,9 +5,9 @@ package Transaccion is
 
    type I_Transaccion_Strategy is interface;
 
-   type Tipo_Estrategia is (Deposito, Transferencia, Retiro);
+   type Estrategia_Transaccion is (Deposito, Transferencia, Retiro);
 
-   function Get_Tipo (Self : I_Transaccion_Strategy) return Tipo_Estrategia is abstract;
+   function Get_Tipo (Self : I_Transaccion_Strategy) return Estrategia_Transaccion is abstract;
 
    procedure Ejecutar (Self    : I_Transaccion_Strategy;
                        Origen  : in out Cuenta_Type'Class;
@@ -19,7 +19,7 @@ package Transaccion is
    type Deposito_Strategy is new I_Transaccion_Strategy with null record;
 
    overriding
-   function Get_Tipo (Self : Deposito_Strategy) return Tipo_Estrategia;
+   function Get_Tipo (Self : Deposito_Strategy) return Estrategia_Transaccion;
 
    overriding
    procedure Ejecutar (Self    : Deposito_Strategy;
@@ -30,7 +30,7 @@ package Transaccion is
    type Transferencia_Strategy is new I_Transaccion_Strategy with null record;
 
    overriding
-   function Get_Tipo (Self : Transferencia_Strategy) return Tipo_Estrategia;
+   function Get_Tipo (Self : Transferencia_Strategy) return Estrategia_Transaccion;
 
    overriding
    procedure Ejecutar (Self    : Transferencia_Strategy;
@@ -41,7 +41,7 @@ package Transaccion is
    type Retiro_Strategy is new I_Transaccion_Strategy with null record;
 
    overriding
-   function Get_Tipo (Self : Retiro_Strategy) return Tipo_Estrategia;
+   function Get_Tipo (Self : Retiro_Strategy) return Estrategia_Transaccion;
 
    overriding
    procedure Ejecutar (Self    : Retiro_Strategy;
