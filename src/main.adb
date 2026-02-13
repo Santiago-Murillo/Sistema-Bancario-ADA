@@ -280,7 +280,7 @@ begin
       Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
         Transaccion_Tarjeta.Compra_Strategy'(null record);
    begin
-      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion
         (Estrategia     => Estrategia,
          Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
          Monto          => 1200.00,
@@ -307,7 +307,7 @@ begin
       Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
         Transaccion_Tarjeta.Compra_Strategy'(null record);
    begin
-      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion
         (Estrategia     => Estrategia,
          Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
          Monto          => 800.00,
@@ -334,7 +334,7 @@ begin
       Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
         Transaccion_Tarjeta.Compra_Strategy'(null record);
    begin
-      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion
         (Estrategia     => Estrategia,
          Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
          Monto          => 4000.00,
@@ -354,7 +354,7 @@ begin
       Estrategia : constant Transaccion_Tarjeta.Pago_Tarjeta_Strategy :=
         Transaccion_Tarjeta.Pago_Tarjeta_Strategy'(null record);
    begin
-      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion
         (Estrategia     => Estrategia,
          Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
          Monto          => 500.00);
@@ -379,7 +379,8 @@ begin
    Tarjeta_Credito_Service.Calcular_Aplicar_Interes
      (Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all));
 
-   Put_Line ("Intereses aplicados!");
+   Put_Line ("Intereses aplicados a tarjeta " &
+             Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all));
    Put_Line ("  Nuevo Saldo Utilizado: " &
              Tarjeta_Credito.Saldo_Type'Image
                (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));

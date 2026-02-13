@@ -30,9 +30,7 @@ package Tarjeta_Credito_Service is
    with
       Pre => Numero_Tarjeta'Length > 0;
 
-   -- === OPERACIONES DE NEGOCIO ===
-
-   function Ejecutar_Operacion_Tarjeta
+   function Ejecutar_Operacion
      (Estrategia     : Transaccion_Tarjeta.I_Transaccion_Tarjeta_Strategy'Class;
       Numero_Tarjeta : String;
       Monto          : Saldo_Type;
