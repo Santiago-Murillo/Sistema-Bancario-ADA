@@ -36,3 +36,5 @@ desktop.ini
 *.tmp
 *.bak
 *~
+
+.github/
