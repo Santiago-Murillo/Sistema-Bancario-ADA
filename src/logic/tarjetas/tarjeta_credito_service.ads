@@ -14,8 +14,6 @@ package Tarjeta_Credito_Service is
    Tarjeta_No_Encontrada : exception;
    Tarjeta_Con_Deuda : exception;
 
-   -- === OPERACIONES CRUD ===
-
    function Crear_Tarjeta
      (Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
       return Tarjeta_Credito_Access;
@@ -36,16 +34,11 @@ package Tarjeta_Credito_Service is
 
    -- === OPERACIONES DE NEGOCIO ===
 
-   procedure Comprar
-     (Numero_Tarjeta : String;
+   function Ejecutar_Operacion_Tarjeta
+     (Estrategia     : Transaccion_Tarjeta.I_Transaccion_Tarjeta_Strategy'Class;
+      Numero_Tarjeta : String;
       Monto          : Saldo_Type;
-      Descripcion    : String)
-   with
-      Pre => Numero_Tarjeta'Length > 0 and Monto > 0.0;
-
-   procedure Pagar
-     (Numero_Tarjeta : String;
-      Monto          : Saldo_Type)
+      Descripcion    : String := "") return Boolean
    with
       Pre => Numero_Tarjeta'Length > 0 and Monto > 0.0;
 

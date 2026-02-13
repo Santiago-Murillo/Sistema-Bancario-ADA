@@ -69,53 +69,26 @@ package body Tarjeta_Credito_Service is
 
    -- === OPERACIONES DE NEGOCIO ===
 
-   procedure Comprar
-     (Numero_Tarjeta : String;
+   function Ejecutar_Operacion_Tarjeta
+     (Estrategia     : Transaccion_Tarjeta.I_Transaccion_Tarjeta_Strategy'Class;
+      Numero_Tarjeta : String;
       Monto          : Saldo_Type;
-      Descripcion    : String)
+      Descripcion    : String := "") return Boolean
    is
-      Tarjeta   : constant Tarjeta_Credito_Access := Obtener_Tarjeta (Numero_Tarjeta);
-      Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
-        Transaccion_Tarjeta.Compra_Strategy'(null record);
+      Tarjeta : constant Tarjeta_Credito_Access := Obtener_Tarjeta (Numero_Tarjeta);
    begin
-      -- Validar que la tarjeta no esté vencida
       if Esta_Vencida (Tarjeta.all) then
-         raise Tarjeta_Vencida with "La tarjeta ha vencido";
+         return False;
       end if;
 
-      -- Validar que hay crédito disponible
-      if Monto > Get_Credito_Disponible (Tarjeta.all) then
-         raise Limite_Credito_Excedido with
-           "Fondos insuficientes. Crédito disponible: " &
-           Get_Credito_Disponible (Tarjeta.all)'Image;
-      end if;
-
-      -- Ejecutar la compra
       Transaccion_Tarjeta.Ejecutar (Estrategia, Tarjeta.all, Monto);
 
-      Put_Line ("Compra realizada: " & Descripcion & " - Monto: " & Monto'Image);
-   end Comprar;
+      return True;
 
-   procedure Pagar
-     (Numero_Tarjeta : String;
-      Monto          : Saldo_Type)
-   is
-      Tarjeta   : constant Tarjeta_Credito_Access := Obtener_Tarjeta (Numero_Tarjeta);
-      Estrategia : constant Transaccion_Tarjeta.Pago_Tarjeta_Strategy :=
-        Transaccion_Tarjeta.Pago_Tarjeta_Strategy'(null record);
-   begin
-      -- Validar que el monto no exceda la deuda
-      if Monto > Get_Saldo_Utilizado (Tarjeta.all) then
-         raise Pago_Invalido with
-           "El monto del pago excede la deuda. Deuda actual: " &
-           Get_Saldo_Utilizado (Tarjeta.all)'Image;
-      end if;
-
-      -- Ejecutar el pago
-      Transaccion_Tarjeta.Ejecutar (Estrategia, Tarjeta.all, Monto);
-
-      Put_Line ("Pago realizado - Monto: " & Monto'Image);
-   end Pagar;
+   exception
+      when Limite_Credito_Excedido | Pago_Invalido | Tarjeta_Vencida =>
+         return False;
+   end Ejecutar_Operacion_Tarjeta;
 
    procedure Calcular_Aplicar_Interes (Numero_Tarjeta : String) is
       Tarjeta : constant Tarjeta_Credito_Access := Obtener_Tarjeta (Numero_Tarjeta);

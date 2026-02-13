@@ -1,4 +1,11 @@
+with Tarjeta_Credito_Service;
+
 package body Transaccion_Tarjeta is
+
+   Limite_Credito_Excedido : exception renames
+     Tarjeta_Credito_Service.Limite_Credito_Excedido;
+   Pago_Invalido : exception renames
+     Tarjeta_Credito_Service.Pago_Invalido;
 
    -- Compra_Strategy
    overriding
@@ -15,7 +22,12 @@ package body Transaccion_Tarjeta is
    is
       pragma Unreferenced (Self);
    begin
-      -- La precondición ya verifica que hay crédito disponible
+      if Monto > Get_Credito_Disponible (Tarjeta) then
+         raise Limite_Credito_Excedido with
+           "Fondos insuficientes. Crédito disponible: " &
+           Get_Credito_Disponible (Tarjeta)'Image;
+      end if;
+
       Incrementar_Deuda (Tarjeta, Monto);
    end Ejecutar;
 
@@ -34,7 +46,12 @@ package body Transaccion_Tarjeta is
    is
       pragma Unreferenced (Self);
    begin
-      -- La precondición ya verifica que el monto no excede la deuda
+      if Monto > Get_Saldo_Utilizado (Tarjeta) then
+         raise Pago_Invalido with
+           "El monto del pago excede la deuda. Deuda actual: " &
+           Get_Saldo_Utilizado (Tarjeta)'Image;
+      end if;
+
       Reducir_Deuda (Tarjeta, Monto);
    end Ejecutar;
 

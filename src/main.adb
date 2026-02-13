@@ -8,6 +8,7 @@ with Cuenta_Corriente;
 with Cuentas_Service;
 with Transaccion_Service;
 with Transaccion;
+with Transaccion_Tarjeta;
 with Movimientos;
 with Tarjeta_Credito;
 with Tarjeta_Credito_Service;
@@ -271,17 +272,25 @@ begin
    -- 7.3. Realizar Compra Exitosa
    Put_Line ("");
    Put_Line ("--- Realizando Compra: Laptop $1,200.00 ---");
+   declare
+      Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
+        Transaccion_Tarjeta.Compra_Strategy'(null record);
    begin
-      Tarjeta_Credito_Service.Comprar
-        (Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
+      if Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+        (Estrategia     => Estrategia,
+         Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
          Monto          => 1200.00,
-         Descripcion    => "Compra de Laptop");
+         Descripcion    => "Compra de Laptop") then
 
-      Put_Line ("Compra exitosa!");
-      Put_Line ("  Saldo Utilizado: " &
-                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
-      Put_Line ("  Credito Disponible: " &
-                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+         Put_Line ("Compra realizada: Compra de Laptop - Monto:  1200.00");
+         Put_Line ("Compra exitosa!");
+         Put_Line ("  Saldo Utilizado: " &
+                   Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
+         Put_Line ("  Credito Disponible: " &
+                   Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+      else
+         Put_Line ("Compra rechazada");
+      end if;
    exception
       when E : others =>
          Put_Line ("Error en compra: " & Ada.Exceptions.Exception_Message (E));
@@ -290,17 +299,25 @@ begin
    -- 7.4. Realizar Otra Compra
    Put_Line ("");
    Put_Line ("--- Realizando Compra: Celular $800.00 ---");
+   declare
+      Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
+        Transaccion_Tarjeta.Compra_Strategy'(null record);
    begin
-      Tarjeta_Credito_Service.Comprar
-        (Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
+      if Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+        (Estrategia     => Estrategia,
+         Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
          Monto          => 800.00,
-         Descripcion    => "Compra de Celular");
+         Descripcion    => "Compra de Celular") then
 
-      Put_Line ("Compra exitosa!");
-      Put_Line ("  Saldo Utilizado: " &
-                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
-      Put_Line ("  Credito Disponible: " &
-                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+         Put_Line ("Compra realizada: Compra de Celular - Monto:  800.00");
+         Put_Line ("Compra exitosa!");
+         Put_Line ("  Saldo Utilizado: " &
+                   Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
+         Put_Line ("  Credito Disponible: " &
+                   Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+      else
+         Put_Line ("Compra rechazada");
+      end if;
    exception
       when E : others =>
          Put_Line ("Error en compra: " & Ada.Exceptions.Exception_Message (E));
@@ -309,16 +326,21 @@ begin
    -- 7.5. Intentar Compra que Excede el Límite
    Put_Line ("");
    Put_Line ("--- Intentando Compra que Excede Limite: $4,000.00 (debe fallar) ---");
+   declare
+      Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
+        Transaccion_Tarjeta.Compra_Strategy'(null record);
    begin
-      Tarjeta_Credito_Service.Comprar
-        (Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
+      if Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+        (Estrategia     => Estrategia,
+         Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
          Monto          => 4000.00,
-         Descripcion    => "Compra grande");
+         Descripcion    => "Compra grande") then
 
-      Put_Line ("ERROR: No deberia permitir compra que excede limite!");
-   exception
-      when Tarjeta_Credito_Service.Limite_Credito_Excedido =>
+         Put_Line ("ERROR: No deberia permitir compra que excede limite!");
+      else
          Put_Line ("OK: Compra rechazada correctamente (excede limite)");
+      end if;
+   exception
       when E : others =>
          Put_Line ("Error inesperado: " & Ada.Exceptions.Exception_Message (E));
    end;
@@ -326,16 +348,24 @@ begin
    -- 7.6. Realizar Pago Parcial
    Put_Line ("");
    Put_Line ("--- Realizando Pago de $500.00 ---");
+   declare
+      Estrategia : constant Transaccion_Tarjeta.Pago_Tarjeta_Strategy :=
+        Transaccion_Tarjeta.Pago_Tarjeta_Strategy'(null record);
    begin
-      Tarjeta_Credito_Service.Pagar
-        (Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
-         Monto          => 500.00);
+      if Tarjeta_Credito_Service.Ejecutar_Operacion_Tarjeta
+        (Estrategia     => Estrategia,
+         Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all),
+         Monto          => 500.00) then
 
-      Put_Line ("Pago exitoso!");
-      Put_Line ("  Saldo Utilizado: " &
-                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
-      Put_Line ("  Credito Disponible: " &
-                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+         Put_Line ("Pago realizado - Monto:  500.00");
+         Put_Line ("Pago exitoso!");
+         Put_Line ("  Saldo Utilizado: " &
+                   Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
+         Put_Line ("  Credito Disponible: " &
+                   Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+      else
+         Put_Line ("Pago rechazado");
+      end if;
    exception
       when E : others =>
          Put_Line ("Error en pago: " & Ada.Exceptions.Exception_Message (E));
