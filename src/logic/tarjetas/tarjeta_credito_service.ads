@@ -1,18 +1,13 @@
 with Tarjeta_Credito;
 with Transaccion_Tarjeta;
 with Length;
+with Tarjeta_Resultado;
 
 package Tarjeta_Credito_Service is
 
    use Tarjeta_Credito;
    use Length;
-
-   -- Excepciones
-   Limite_Credito_Excedido : exception;
-   Pago_Invalido : exception;
-   Tarjeta_Vencida : exception;
-   Tarjeta_No_Encontrada : exception;
-   Tarjeta_Con_Deuda : exception;
+   use Tarjeta_Resultado;
 
    function Crear_Tarjeta
      (Tasa_Interes_Mensual  : Tasa_Interes_Type := Length.DEFAULT_TASA_INTERES_TARJETA)
@@ -23,12 +18,15 @@ package Tarjeta_Credito_Service is
       Pre => Numero_Tarjeta'Length > 0;
 
    procedure Actualizar_Limite_Credito
-     (Numero_Tarjeta : String;
+     (Status        : out Tarjeta_Resultado_Type;
+      Numero_Tarjeta : String;
       Nuevo_Limite   : Limite_Credito_Type)
    with
       Pre => Numero_Tarjeta'Length > 0 and Nuevo_Limite > 0.0;
 
-   procedure Eliminar_Tarjeta (Numero_Tarjeta : String)
+   procedure Eliminar_Tarjeta
+     (Status        : out Tarjeta_Resultado_Type;
+      Numero_Tarjeta : String)
    with
       Pre => Numero_Tarjeta'Length > 0;
 
@@ -38,7 +36,7 @@ package Tarjeta_Credito_Service is
      (Estrategia     : Transaccion_Tarjeta.I_Transaccion_Tarjeta_Strategy'Class;
       Numero_Tarjeta : String;
       Monto          : Saldo_Type;
-      Descripcion    : String := "") return Boolean
+      Descripcion    : String := "") return Tarjeta_Resultado_Type
    with
       Pre => Numero_Tarjeta'Length > 0 and Monto > 0.0;
 

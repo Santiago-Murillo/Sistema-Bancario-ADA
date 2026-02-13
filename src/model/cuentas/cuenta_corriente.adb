@@ -34,11 +34,7 @@ package body Cuenta_Corriente is
 
    overriding procedure Set_Saldo (C : in out Cuenta_Corriente_Type; Saldo : Cuentas.Saldo_Type) is
    begin
-      -- La validación del límite de sobregiro se realiza en la precondición o aquí
-      if Saldo < -Cuentas.Saldo_Type (C.Limite_Sobregiro) then
-         raise Program_Error with "El saldo excede el límite de sobregiro autorizado";
-      end if;
-
+      -- La validación del límite de sobregiro se realiza en la precondición
       Cuentas.Set_Saldo (Cuentas.Cuenta_Type (C), Saldo);
    end Set_Saldo;
 

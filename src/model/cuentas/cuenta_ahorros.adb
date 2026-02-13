@@ -7,9 +7,7 @@ package body Cuenta_Ahorros is
       return Cuenta_Ahorros_Type
    is
    begin
-      if Saldo < 0.0 then
-         raise Program_Error with "Saldo inicial negativo no permitido en Cuenta Ahorros";
-      end if;
+      -- La validación se realiza mediante la precondición y el subtipo Saldo_Ahorros_Type
       return Crear_Cuenta_Ahorros (Saldo_Ahorros_Type (Saldo), Estado);
    end Crear_Cuenta;
 

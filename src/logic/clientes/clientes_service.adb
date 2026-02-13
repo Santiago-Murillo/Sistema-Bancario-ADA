@@ -2,6 +2,7 @@ with Cuenta_Ahorros;
 with Cuenta_Corriente;
 with Cuentas;
 with Tarjeta_Credito_Service;
+with Resultado_Operacion; use Resultado_Operacion;
 
 package body Clientes_Service is
    use type Cuentas.Saldo_Type;
@@ -14,7 +15,8 @@ package body Clientes_Service is
    end Esta_En_Rango;
 
    procedure Crear_Cliente
-     (Resultado     : out Cli.Cliente_Type;
+     (Status        : out Cliente_Resultado_Type;
+      Resultado     : out Cli.Cliente_Type;
       Cuenta_Nueva  : out Cuentas.Cuenta_Access;
       Cedula        : String;
       Nombre        : String;
@@ -28,36 +30,42 @@ package body Clientes_Service is
       Numero_Cuenta_Generada : Cli.Numero_Cuenta_Type;
    begin
       if not Esta_En_Rango (Cedula, Cli.MAX_CEDULA) then
-         raise Datos_Invalidos with "Cedula fuera de rango";
+         Status := Crear_Error (Cedula_Invalida, "Cedula fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Nombre, Cli.MAX_NOMBRE) then
-         raise Datos_Invalidos with "Nombre fuera de rango";
+         Status := Crear_Error (Nombre_Invalido, "Nombre fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Apellido, Cli.MAX_APELLIDO) then
-         raise Datos_Invalidos with "Apellido fuera de rango";
+         Status := Crear_Error (Apellido_Invalido, "Apellido fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Direccion, Cli.MAX_DIRECCION) then
-         raise Datos_Invalidos with "Direccion fuera de rango";
+         Status := Crear_Error (Direccion_Invalida, "Direccion fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Correo, Cli.MAX_CORREO) then
-         raise Datos_Invalidos with "Correo fuera de rango";
+         Status := Crear_Error (Correo_Invalido, "Correo fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Telefono, Cli.MAX_TELEFONO) then
-         raise Datos_Invalidos with "Telefono fuera de rango";
+         Status := Crear_Error (Telefono_Invalido, "Telefono fuera de rango");
+         return;
       end if;
 
       --  Crear la cuenta primero según la bandera (Tipo_Cuenta)
       case Tipo_Cuenta is
          when Ahorros =>
-            --  Validación específica o dejar que falle la precondición
-            --  El tipo Cuenta_Ahorros requiere Saldo >= 0.0
+            --  Validación específica: saldo no negativo para cuenta ahorros
             if Saldo_Inicial < 0.0 then
-               raise Datos_Invalidos with "El saldo inicial para cuenta de ahorros no puede ser negativo";
+               Status := Crear_Error (Saldo_Inicial_Invalido, "El saldo inicial para cuenta de ahorros no puede ser negativo");
+               return;
             end if;
 
             Cuenta_Nueva := new Cuenta_Ahorros.Cuenta_Ahorros_Type'(
@@ -83,10 +91,13 @@ package body Clientes_Service is
          Correo        => Correo,
          Telefono      => Telefono,
          Numero_Cuenta => Numero_Cuenta_Generada);
+
+      Status := Crear_Exito;
    end Crear_Cliente;
 
    procedure Actualizar_Cliente
-     (Cliente   : in out Cli.Cliente_Type;
+     (Status    : out Cliente_Resultado_Type;
+      Cliente   : in out Cli.Cliente_Type;
       Nombre    : String;
       Apellido  : String;
       Direccion : String;
@@ -97,23 +108,28 @@ package body Clientes_Service is
       Numero_Cuenta_Actual : constant Cli.Numero_Cuenta_Type := Cli.Get_Numero_Cuenta (Cliente);
    begin
       if not Esta_En_Rango (Nombre, Cli.MAX_NOMBRE) then
-         raise Datos_Invalidos with "Nombre fuera de rango";
+         Status := Crear_Error (Nombre_Invalido, "Nombre fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Apellido, Cli.MAX_APELLIDO) then
-         raise Datos_Invalidos with "Apellido fuera de rango";
+         Status := Crear_Error (Apellido_Invalido, "Apellido fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Direccion, Cli.MAX_DIRECCION) then
-         raise Datos_Invalidos with "Direccion fuera de rango";
+         Status := Crear_Error (Direccion_Invalida, "Direccion fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Correo, Cli.MAX_CORREO) then
-         raise Datos_Invalidos with "Correo fuera de rango";
+         Status := Crear_Error (Correo_Invalido, "Correo fuera de rango");
+         return;
       end if;
 
       if not Esta_En_Rango (Telefono, Cli.MAX_TELEFONO) then
-         raise Datos_Invalidos with "Telefono fuera de rango";
+         Status := Crear_Error (Telefono_Invalido, "Telefono fuera de rango");
+         return;
       end if;
 
       --  Recrear el cliente con los nuevos datos
@@ -125,6 +141,8 @@ package body Clientes_Service is
          Correo        => Correo,
          Telefono      => Telefono,
          Numero_Cuenta => Numero_Cuenta_Actual);
+
+      Status := Crear_Exito;
    end Actualizar_Cliente;
 
    -- Procedimientos para gestión de tarjetas de crédito
@@ -133,14 +151,16 @@ package body Clientes_Service is
       Tarjeta_Nueva     : out Tarjeta_Credito.Tarjeta_Credito_Access)
    is
    begin
-      Tarjeta_Nueva := Tarjeta_Credito_Service.Crear_Tarjeta
-        (Tasa_Interes_Mensual => Length.DEFAULT_TASA_INTERES_TARJETA);
+      --  Crear y asociar una tarjeta de crédito al cliente
+      Tarjeta_Nueva := Tarjeta_Credito_Service.Crear_Tarjeta;
 
+     --  Asociar el número de tarjeta al cliente
       Cli.Set_Numero_Tarjeta (Cliente, Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_Nueva.all));
    end Asociar_Tarjeta_Credito;
 
    procedure Crear_Cliente_Con_Tarjeta
-     (Resultado         : out Cli.Cliente_Type;
+     (Status            : out Cliente_Resultado_Type;
+      Resultado         : out Cli.Cliente_Type;
       Cuenta_Nueva      : out Cuentas.Cuenta_Access;
       Tarjeta_Nueva     : out Tarjeta_Credito.Tarjeta_Credito_Access;
       Cedula            : String;
@@ -155,7 +175,8 @@ package body Clientes_Service is
    begin
       -- Primero crear el cliente con su cuenta
       Crear_Cliente
-        (Resultado     => Resultado,
+        (Status        => Status,
+         Resultado     => Resultado,
          Cuenta_Nueva  => Cuenta_Nueva,
          Cedula        => Cedula,
          Nombre        => Nombre,
@@ -165,6 +186,11 @@ package body Clientes_Service is
          Telefono      => Telefono,
          Tipo_Cuenta   => Tipo_Cuenta,
          Saldo_Inicial => Saldo_Inicial);
+
+      -- Solo continuar si la creación fue exitosa
+      if Status.Estado /= Resultado_Operacion.Exito then
+         return;
+      end if;
 
       -- Luego asociar una tarjeta de crédito
       Asociar_Tarjeta_Credito

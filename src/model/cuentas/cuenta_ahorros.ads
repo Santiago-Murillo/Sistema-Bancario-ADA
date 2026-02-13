@@ -14,7 +14,8 @@ package Cuenta_Ahorros is
    overriding function Crear_Cuenta
      (Saldo         : Cuentas.Saldo_Type;
       Estado        : Cuentas.Estado_Type)
-      return Cuenta_Ahorros_Type;
+      return Cuenta_Ahorros_Type
+   with Pre => Saldo >= 0.0;
 
    function Crear_Cuenta_Ahorros
      (Saldo         : Saldo_Ahorros_Type;

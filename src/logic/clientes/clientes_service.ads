@@ -2,17 +2,18 @@ with Clientes;
 with Length;
 with Cuentas;
 with Tarjeta_Credito;
+with Cliente_Resultado;
 
 package Clientes_Service is
 
    use Tarjeta_Credito;
-
-   Datos_Invalidos : exception;
+   use Cliente_Resultado;
 
    type Tipo_Cuenta_Enum is (Ahorros, Corriente);
 
    procedure Crear_Cliente
-     (Resultado     : out Clientes.Cliente_Type;
+     (Status        : out Cliente_Resultado_Type;
+      Resultado     : out Clientes.Cliente_Type;
       Cuenta_Nueva  : out Cuentas.Cuenta_Access;
       Cedula        : String;
       Nombre        : String;
@@ -32,12 +33,13 @@ package Clientes_Service is
          Telefono'Length > 0 and Telefono'Length <= Clientes.MAX_TELEFONO;
 
    procedure Actualizar_Cliente
-     (Cliente    : in out Clientes.Cliente_Type;
-      Nombre     : String;
-      Apellido   : String;
-      Direccion  : String;
-      Correo     : String;
-      Telefono   : String)
+     (Status    : out Cliente_Resultado_Type;
+      Cliente   : in out Clientes.Cliente_Type;
+      Nombre    : String;
+      Apellido  : String;
+      Direccion : String;
+      Correo    : String;
+      Telefono  : String)
    with
       Pre =>
          Nombre'Length > 0 and Nombre'Length <= Clientes.MAX_NOMBRE and
@@ -55,7 +57,8 @@ package Clientes_Service is
       Post => Clientes.Tiene_Tarjeta (Cliente);
 
    procedure Crear_Cliente_Con_Tarjeta
-     (Resultado         : out Clientes.Cliente_Type;
+     (Status            : out Cliente_Resultado_Type;
+      Resultado         : out Clientes.Cliente_Type;
       Cuenta_Nueva      : out Cuentas.Cuenta_Access;
       Tarjeta_Nueva     : out Tarjeta_Credito.Tarjeta_Credito_Access;
       Cedula            : String;
