@@ -12,13 +12,14 @@ package body Clientes is
    is
    begin
       return Cliente_Type'(
-         Cedula    => Cedula,
-         Nombre    => Nombres_Str.To_Bounded_String (Nombre),
-         Apellido  => Nombres_Str.To_Bounded_String (Apellido),
-         Direccion => Direccion_Str.To_Bounded_String (Direccion),
-         Correo    => Nombres_Str.To_Bounded_String (Correo),
-         Telefono  => Telefono_Str.To_Bounded_String (Telefono),
-         Id_Cuenta => Id_Cuenta
+         Cedula     => Cedula,
+         Nombre     => Nombres_Str.To_Bounded_String (Nombre),
+         Apellido   => Nombres_Str.To_Bounded_String (Apellido),
+         Direccion  => Direccion_Str.To_Bounded_String (Direccion),
+         Correo     => Nombres_Str.To_Bounded_String (Correo),
+         Telefono   => Telefono_Str.To_Bounded_String (Telefono),
+         Id_Cuenta  => Id_Cuenta,
+         Id_Tarjeta => 0  -- Sin tarjeta por defecto
       );
    end Crear_Cliente;
 
@@ -56,5 +57,15 @@ package body Clientes is
    begin
       return C.Id_Cuenta;
    end Get_Id_Cuenta;
+
+   function Get_Id_Tarjeta (C : Cliente_Type) return Natural is
+   begin
+      return C.Id_Tarjeta;
+   end Get_Id_Tarjeta;
+
+   procedure Set_Id_Tarjeta (C : in out Cliente_Type; Id_Tarjeta : Natural) is
+   begin
+      C.Id_Tarjeta := Id_Tarjeta;
+   end Set_Id_Tarjeta;
 
 end Clientes;

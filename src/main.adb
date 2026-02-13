@@ -9,10 +9,13 @@ with Cuentas_Service;
 with Transaccion_Service;
 with Transaccion;
 with Movimientos;
+with Tarjeta_Credito;
+with Tarjeta_Credito_Service;
 
 procedure Main is
-   Cliente_1, Cliente_2  : Clientes.Cliente_Type;
-   Cuenta_1, Cuenta_2    : Cuentas.Cuenta_Access;
+   Cliente_1, Cliente_2, Cliente_3  : Clientes.Cliente_Type;
+   Cuenta_1, Cuenta_2, Cuenta_3     : Cuentas.Cuenta_Access;
+   Tarjeta_1                        : Tarjeta_Credito.Tarjeta_Credito_Access;
 
    -- Variables para IDs de movimientos
    Id_Mov : Movimientos.Id_Movimiento_Type;
@@ -222,6 +225,144 @@ begin
    else
       Put_Line ("ERROR: Deberia permitir retiro en cuenta activa!");
    end if;
+-------------------------------------------------------
+   -- 7. PRUEBAS DE TARJETA DE CREDITO
+   -------------------------------------------------------
+   Put_Line ("");
+   Put_Line ("========================================");
+   Put_Line ("=== PRUEBAS DE TARJETA DE CREDITO ===");
+   Put_Line ("========================================");
+
+   -- 7.1. Crear Cliente 3 con Tarjeta de Crédito
+   Put_Line ("");
+   Put_Line ("--- Creando Cliente 3 con Tarjeta de Credito ---");
+   begin
+      Clientes_Service.Crear_Cliente_Con_Tarjeta
+        (Resultado         => Cliente_3,
+         Cuenta_Nueva      => Cuenta_3,
+         Tarjeta_Nueva     => Tarjeta_1,
+         Cedula            => "0304050607",
+         Nombre            => "Carlos",
+         Apellido          => "Gomez",
+         Direccion         => "Calle 3",
+         Correo            => "carlos@mail.com",
+         Telefono          => "0977777777",
+         Tipo_Cuenta       => Clientes_Service.Ahorros,
+         Saldo_Inicial     => 2000.00);
+
+      Put_Line ("Cliente 3 creado: " & Clientes.Get_Nombre (Cliente_3));
+      Put_Line ("  Cuenta Ahorros - Saldo: " &
+                Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_3.all)));
+      Put_Line ("  Tarjeta Numero: " & Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_1.all));
+      Put_Line ("  Limite Credito: " &
+                Tarjeta_Credito.Limite_Credito_Type'Image (Tarjeta_Credito.Get_Limite_Credito (Tarjeta_1.all)));
+   exception
+      when E : others =>
+         Put_Line ("Error creando Cliente 3 con tarjeta: " &
+                   Ada.Exceptions.Exception_Message (E));
+   end;
+
+   -- 7.2. Consultar Estado de Tarjeta
+   Put_Line ("");
+   Put_Line ("--- Estado Inicial de Tarjeta ---");
+   Put_Line (Tarjeta_Credito_Service.Consultar_Estado_Tarjeta
+             (Tarjeta_Credito.Get_Id (Tarjeta_1.all)));
+
+   -- 7.3. Realizar Compra Exitosa
+   Put_Line ("");
+   Put_Line ("--- Realizando Compra: Laptop $1,200.00 ---");
+   begin
+      Tarjeta_Credito_Service.Realizar_Compra
+        (Id_Tarjeta  => Tarjeta_Credito.Get_Id (Tarjeta_1.all),
+         Monto       => 1200.00,
+         Descripcion => "Compra de Laptop");
+
+      Put_Line ("Compra exitosa!");
+      Put_Line ("  Saldo Utilizado: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
+      Put_Line ("  Credito Disponible: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+   exception
+      when E : others =>
+         Put_Line ("Error en compra: " & Ada.Exceptions.Exception_Message (E));
+   end;
+
+   -- 7.4. Realizar Otra Compra
+   Put_Line ("");
+   Put_Line ("--- Realizando Compra: Celular $800.00 ---");
+   begin
+      Tarjeta_Credito_Service.Realizar_Compra
+        (Id_Tarjeta  => Tarjeta_Credito.Get_Id (Tarjeta_1.all),
+         Monto       => 800.00,
+         Descripcion => "Compra de Celular");
+
+      Put_Line ("Compra exitosa!");
+      Put_Line ("  Saldo Utilizado: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
+      Put_Line ("  Credito Disponible: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+   exception
+      when E : others =>
+         Put_Line ("Error en compra: " & Ada.Exceptions.Exception_Message (E));
+   end;
+
+   -- 7.5. Intentar Compra que Excede el Límite
+   Put_Line ("");
+   Put_Line ("--- Intentando Compra que Excede Limite: $4,000.00 (debe fallar) ---");
+   begin
+      Tarjeta_Credito_Service.Realizar_Compra
+        (Id_Tarjeta  => Tarjeta_Credito.Get_Id (Tarjeta_1.all),
+         Monto       => 4000.00,
+         Descripcion => "Compra grande");
+
+      Put_Line ("ERROR: No deberia permitir compra que excede limite!");
+   exception
+      when Tarjeta_Credito_Service.Limite_Credito_Excedido =>
+         Put_Line ("OK: Compra rechazada correctamente (excede limite)");
+      when E : others =>
+         Put_Line ("Error inesperado: " & Ada.Exceptions.Exception_Message (E));
+   end;
+
+   -- 7.6. Realizar Pago Parcial
+   Put_Line ("");
+   Put_Line ("--- Realizando Pago de $500.00 ---");
+   begin
+      Tarjeta_Credito_Service.Realizar_Pago
+        (Id_Tarjeta => Tarjeta_Credito.Get_Id (Tarjeta_1.all),
+         Monto      => 500.00);
+
+      Put_Line ("Pago exitoso!");
+      Put_Line ("  Saldo Utilizado: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
+      Put_Line ("  Credito Disponible: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Credito_Disponible (Tarjeta_1.all)));
+   exception
+      when E : others =>
+         Put_Line ("Error en pago: " & Ada.Exceptions.Exception_Message (E));
+   end;
+
+   -- 7.7. Calcular y Aplicar Intereses
+   Put_Line ("");
+   Put_Line ("--- Aplicando Intereses Mensuales (3.50%) ---");
+   begin
+      Tarjeta_Credito_Service.Calcular_Aplicar_Interes (Tarjeta_Credito.Get_Id (Tarjeta_1.all));
+
+      Put_Line ("Intereses aplicados!");
+      Put_Line ("  Nuevo Saldo Utilizado: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
+      Put_Line ("  Pago Minimo: " &
+                Tarjeta_Credito.Saldo_Type'Image (Tarjeta_Credito.Get_Pago_Minimo (Tarjeta_1.all)));
+   exception
+      when E : others =>
+         Put_Line ("Error aplicando intereses: " & Ada.Exceptions.Exception_Message (E));
+   end;
+
+   -- 7.8. Consultar Estado Final
+   Put_Line ("");
+   Put_Line ("--- Estado Final de Tarjeta ---");
+   Put_Line (Tarjeta_Credito_Service.Consultar_Estado_Tarjeta
+             (Tarjeta_Credito.Get_Id (Tarjeta_1.all)));
+
 
    Put_Line ("");
    Put_Line ("--- Fin de operaciones ---");

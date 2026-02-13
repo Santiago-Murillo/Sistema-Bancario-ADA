@@ -45,17 +45,21 @@ package Clientes is
    function Get_Correo (C : Cliente_Type) return String;
    function Get_Telefono (C : Cliente_Type) return String;
    function Get_Id_Cuenta (C : Cliente_Type) return Id_Cuenta_Type;
+   function Get_Id_Tarjeta (C : Cliente_Type) return Natural;
+
+   procedure Set_Id_Tarjeta (C : in out Cliente_Type; Id_Tarjeta : Natural);
 
 private
 
    type Cliente_Type is record
-      Cedula    : String (1 .. MAX_CEDULA);
-      Nombre    : Nombres_Str.Bounded_String;
-      Apellido  : Nombres_Str.Bounded_String;
-      Direccion : Direccion_Str.Bounded_String;
-      Correo    : Nombres_Str.Bounded_String;
-      Telefono  : Telefono_Str.Bounded_String;
-      Id_Cuenta : Id_Cuenta_Type;
+      Cedula     : String (1 .. MAX_CEDULA);
+      Nombre     : Nombres_Str.Bounded_String;
+      Apellido   : Nombres_Str.Bounded_String;
+      Direccion  : Direccion_Str.Bounded_String;
+      Correo     : Nombres_Str.Bounded_String;
+      Telefono   : Telefono_Str.Bounded_String;
+      Id_Cuenta  : Id_Cuenta_Type;
+      Id_Tarjeta : Natural := 0;  -- 0 = sin tarjeta
    end record;
 
 end Clientes;

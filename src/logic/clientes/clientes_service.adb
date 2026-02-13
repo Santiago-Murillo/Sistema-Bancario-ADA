@@ -1,6 +1,7 @@
 with Cuenta_Ahorros;
 with Cuenta_Corriente;
 with Cuentas;
+with Tarjeta_Credito_Service;
 
 package body Clientes_Service is
    use type Cuentas.Saldo_Type;
@@ -126,5 +127,55 @@ package body Clientes_Service is
          Telefono  => Telefono,
          Id_Cuenta => Id_Actual);
    end Actualizar_Cliente;
+
+   -- Procedimientos para gestión de tarjetas de crédito
+   procedure Asociar_Tarjeta_Credito
+     (Cliente           : in out Cli.Cliente_Type;
+      Tarjeta_Nueva     : out Tarjeta_Credito.Tarjeta_Credito_Access)
+   is
+      -- El Id_Cliente que usaremos es el Id de cuenta ya que el cliente no tiene ID propio
+      Id_Cliente_Ref : constant Natural := Natural (Cli.Get_Id_Cuenta (Cliente));
+   begin
+      -- Crear la tarjeta usando el servicio de tarjetas
+      Tarjeta_Nueva := Tarjeta_Credito_Service.Crear_Tarjeta
+        (Id_Cliente           => Id_Cliente_Ref,
+         Tasa_Interes_Mensual => Length.DEFAULT_TASA_INTERES_TARJETA);
+
+      -- Asociar el ID de la tarjeta al cliente
+      Cli.Set_Id_Tarjeta (Cliente, Tarjeta_Credito.Get_Id (Tarjeta_Nueva.all));
+   end Asociar_Tarjeta_Credito;
+
+   procedure Crear_Cliente_Con_Tarjeta
+     (Resultado         : out Cli.Cliente_Type;
+      Cuenta_Nueva      : out Cuentas.Cuenta_Access;
+      Tarjeta_Nueva     : out Tarjeta_Credito.Tarjeta_Credito_Access;
+      Cedula            : String;
+      Nombre            : String;
+      Apellido          : String;
+      Direccion         : String;
+      Correo            : String;
+      Telefono          : String;
+      Tipo_Cuenta       : Tipo_Cuenta_Enum;
+      Saldo_Inicial     : Cuentas.Saldo_Type)
+   is
+   begin
+      -- Primero crear el cliente con su cuenta
+      Crear_Cliente
+        (Resultado     => Resultado,
+         Cuenta_Nueva  => Cuenta_Nueva,
+         Cedula        => Cedula,
+         Nombre        => Nombre,
+         Apellido      => Apellido,
+         Direccion     => Direccion,
+         Correo        => Correo,
+         Telefono      => Telefono,
+         Tipo_Cuenta   => Tipo_Cuenta,
+         Saldo_Inicial => Saldo_Inicial);
+
+      -- Luego asociar una tarjeta de crédito
+      Asociar_Tarjeta_Credito
+        (Cliente        => Resultado,
+         Tarjeta_Nueva  => Tarjeta_Nueva);
+   end Crear_Cliente_Con_Tarjeta;
 
 end Clientes_Service;
