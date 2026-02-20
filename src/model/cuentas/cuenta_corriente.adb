@@ -18,7 +18,7 @@ package body Cuenta_Corriente is
          Cuentas.Crear_Cuenta (Saldo, Estado);
    begin
       return (Base with
-         Limite_Sobregiro  => Length.DEFAULT_LIMITE_SOBREGIRO,
+         Limite_Sobregiro  => Length.MAX_LIMITE_SOBREGIRO,
          Interes_Sobregiro => Interes_Sobregiro_Fijo_Type (Length.DEFAULT_INTERES_SOBREGIRO));
    end Crear_Cuenta_Corriente;
 

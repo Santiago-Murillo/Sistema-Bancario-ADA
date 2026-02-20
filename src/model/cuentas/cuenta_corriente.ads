@@ -23,7 +23,7 @@ package Cuenta_Corriente is
       return Cuenta_Corriente_Type
    with
       Pre =>
-         Saldo >= -Cuentas.Saldo_Type (Length.DEFAULT_LIMITE_SOBREGIRO);
+         Saldo >= -Cuentas.Saldo_Type (Length.MAX_LIMITE_SOBREGIRO);
 
    function Get_Limite_Sobregiro (C : Cuenta_Corriente_Type) return Limite_Sobregiro_Type;
    function Get_Interes_Sobregiro (C : Cuenta_Corriente_Type) return Interes_Sobregiro_Type;
