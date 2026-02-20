@@ -1,7 +1,5 @@
 package body Cuenta_Estado is
 
-   -- Modelo puro: solo implementa comportamientos básicos de cada estado
-
    overriding
    function Puede_Realizar_Operacion
      (Self      : Estado_Activa_Type;
