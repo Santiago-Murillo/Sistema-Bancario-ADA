@@ -609,31 +609,44 @@ begin
    Put_Line ("  Saldo Actual: " &
              Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_2.all)));
 
-   -- Crear sobregiro
+   -- Crear sobregiro (retirar MÁS del saldo disponible)
    Resultado := Transaccion_Service.Ejecutar_Transaccion
      (Estrategia    => Estrategia_Retiro,
       C_Origen      => Cuenta_2.all,
       C_Destino     => Cuenta_2.all,
-      Monto         => 500.00,
+      Monto         => 900.00,  -- Cambiado de 500.00 a 900.00 para crear sobregiro real
       Descripcion   => "Retiro para crear sobregiro",
       Id_Movimiento => Id_Mov);
 
    if Resultado then
       Put_Line ("  Saldo con Sobregiro: " &
                 Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_2.all)));
-      Put_Line ("  Aplicando interes de sobregiro (22.00% mensual)...");
 
-      declare
-         Cuenta_Corriente_Ptr : Cuenta_Corriente.Cuenta_Corriente_Type renames
-           Cuenta_Corriente.Cuenta_Corriente_Type (Cuenta_2.all);
-      begin
-         Cuentas_Corriente_Service.Aplicar_Interes (Cuenta_Corriente_Ptr);
-         Put_Line ("[OK] Interes sobre sobregiro aplicado");
-         Put_Line ("  Nuevo Saldo: " &
-                   Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_2.all)));
-      end;
+      -- Verificar que hay sobregiro
+      if Float (Cuentas.Get_Saldo (Cuenta_2.all)) < 0.0 then
+         Put_Line ("  [OK] Sobregiro detectado!");
+         Put_Line ("  Aplicando interes de sobregiro (22.00% mensual)...");
+
+         declare
+            Cuenta_Corriente_Ptr : Cuenta_Corriente.Cuenta_Corriente_Type renames
+              Cuenta_Corriente.Cuenta_Corriente_Type (Cuenta_2.all);
+            Saldo_Antes : constant Cuentas.Saldo_Type := Cuentas.Get_Saldo (Cuenta_2.all);
+            Saldo_Despues : Cuentas.Saldo_Type;
+         begin
+            Cuentas_Corriente_Service.Aplicar_Interes (Cuenta_Corriente_Ptr);
+            Saldo_Despues := Cuentas.Get_Saldo (Cuenta_2.all);
+            Put_Line ("[OK] Interes sobre sobregiro aplicado");
+            Put_Line ("  Saldo Antes:  " & Cuentas.Saldo_Type'Image (Saldo_Antes));
+            Put_Line ("  Nuevo Saldo:  " &
+                      Cuentas.Saldo_Type'Image (Saldo_Despues));
+            Put_Line ("  Interes Cobrado: " &
+                      Float'Image (Float (Saldo_Despues) - Float (Saldo_Antes)));
+         end;
+      else
+         Put_Line ("  [X] ERROR: No se creo sobregiro (saldo sigue positivo)");
+      end if;
    else
-      Put_Line ("  Error al crear sobregiro");
+      Put_Line ("  [X] Error al crear sobregiro - operacion no permitida");
    end if;
 
    -------------------------------------------------------

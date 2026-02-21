@@ -5,11 +5,13 @@ package body Movimientos is
       Monto         : Dinero_Type;
       Descripcion   : String;
       Tipo_Transaccion : Transaccion.Estrategia_Transaccion;
-      Cuenta_Origen : Numero_Cuenta_Type;
-      Cuenta_Destino : Numero_Cuenta_Type)
+      Cuenta_Origen : String;
+      Cuenta_Destino : String)
       return Movimiento_Type
    is
       Desc_Bounded : constant Bounded_String := To_Bounded_String (Descripcion);
+      Origen_Bounded : constant Numero_Cuenta_Str.Bounded_String := Numero_Cuenta_Str.To_Bounded_String (Cuenta_Origen);
+      Destino_Bounded : constant Numero_Cuenta_Str.Bounded_String := Numero_Cuenta_Str.To_Bounded_String (Cuenta_Destino);
       Ahora        : constant Ada.Calendar.Time := Ada.Calendar.Clock;
    begin
       return (Id               => Id,
@@ -17,8 +19,8 @@ package body Movimientos is
               Fecha            => Ahora,
               Descripcion      => Desc_Bounded,
               Tipo_Transaccion => Tipo_Transaccion,
-              Cuenta_Origen    => Cuenta_Origen,
-              Cuenta_Destino   => Cuenta_Destino);
+              Cuenta_Origen    => Origen_Bounded,
+              Cuenta_Destino   => Destino_Bounded);
    end Crear_Movimiento;
 
    function Get_Id (M : Movimiento_Type) return Id_Movimiento_Type is
@@ -41,14 +43,14 @@ package body Movimientos is
       return To_String (M.Descripcion);
    end Get_Descripcion;
 
-   function Get_Origen (M : Movimiento_Type) return Numero_Cuenta_Type is
+   function Get_Origen (M : Movimiento_Type) return String is
    begin
-      return M.Cuenta_Origen;
+      return Numero_Cuenta_Str.To_String (M.Cuenta_Origen);
    end Get_Origen;
 
-   function Get_Destino (M : Movimiento_Type) return Numero_Cuenta_Type is
+   function Get_Destino (M : Movimiento_Type) return String is
    begin
-      return M.Cuenta_Destino;
+      return Numero_Cuenta_Str.To_String (M.Cuenta_Destino);
    end Get_Destino;
 
    function Get_Tipo_Transaccion (M : Movimiento_Type) return Transaccion.Estrategia_Transaccion is
