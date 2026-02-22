@@ -23,11 +23,6 @@ package Tarjeta_Credito_Service is
    with
       Pre => Numero_Tarjeta'Length > 0 and Nuevo_Limite > 0.0;
 
-   procedure Eliminar_Tarjeta
-     (Status        : out Tarjeta_Resultado_Type;
-      Numero_Tarjeta : String)
-   with
-      Pre => Numero_Tarjeta'Length > 0;
 
    function Ejecutar_Operacion
      (Estrategia     : Transaccion_Tarjeta.I_Transaccion_Tarjeta_Strategy'Class;

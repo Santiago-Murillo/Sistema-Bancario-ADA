@@ -54,35 +54,7 @@ package body Tarjeta_Credito_Service is
       Status := Crear_Exito;
    end Actualizar_Limite_Credito;
 
-   procedure Eliminar_Tarjeta
-     (Status        : out Tarjeta_Resultado_Type;
-      Numero_Tarjeta : String)
-   is
-      Tarjeta : constant Tarjeta_Credito_Access := Obtener_Tarjeta (Numero_Tarjeta);
-   begin
-      if Tarjeta = null then
-         Status := Crear_Error (Tarjeta_No_Existe, "Tarjeta " & Numero_Tarjeta & " no encontrada");
-         return;
-      end if;
 
-      -- Validar que no tenga deuda pendiente
-      if Get_Saldo_Utilizado (Tarjeta.all) > 0.0 then
-         Status := Crear_Error (Tiene_Deuda_Pendiente, "No se puede eliminar una tarjeta con deuda pendiente");
-         return;
-      end if;
-
-      -- Buscar y eliminar de la colección
-      for I in Tarjetas_Store.First_Index .. Tarjetas_Store.Last_Index loop
-         if Get_Numero_Tarjeta (Tarjetas_Store.Element (I).all) = Numero_Tarjeta then
-            Tarjetas_Store.Delete (I);
-            Status := Crear_Exito;
-            return;
-         end if;
-      end loop;
-
-      -- Si llegamos aquí, no se encontró (aunque ya validamos con Obtener_Tarjeta)
-      Status := Crear_Error (Tarjeta_No_Existe, "Error interno: tarjeta no encontrada en colección");
-   end Eliminar_Tarjeta;
 
    function Ejecutar_Operacion
      (Estrategia     : Transaccion_Tarjeta.I_Transaccion_Tarjeta_Strategy'Class;

@@ -18,9 +18,9 @@ with Tarjeta_Resultado;
 with Resultado_Operacion; use Resultado_Operacion;
 
 procedure Main is
-   Cliente_1, Cliente_2, Cliente_3, Cliente_4  : Clientes.Cliente_Type;
-   Cuenta_1, Cuenta_2, Cuenta_3, Cuenta_4      : Cuentas.Cuenta_Access;
-   Tarjeta_1, Tarjeta_2                        : Tarjeta_Credito.Tarjeta_Credito_Access;
+   Cliente_1, Cliente_2, Cliente_3 : Clientes.Cliente_Type;
+   Cuenta_1, Cuenta_2, Cuenta_3 : Cuentas.Cuenta_Access;
+   Tarjeta_1 : Tarjeta_Credito.Tarjeta_Credito_Access;
 
    -- Variables para resultados
    Status_Cliente : Cliente_Resultado.Cliente_Resultado_Type;
@@ -650,121 +650,8 @@ begin
    end if;
 
    -------------------------------------------------------
-   -- 12. PRUEBAS DE ELIMINAR TARJETA
-   -------------------------------------------------------
-   Imprimir_Seccion ("9. ELIMINACION DE TARJETAS");
-
-   -- 12.1. Crear nueva tarjeta para Cliente 4
-   Imprimir_Subseccion ("Creando Cliente 4 con Nueva Tarjeta");
-   Clientes_Service.Crear_Cliente_Con_Tarjeta
-     (Status            => Status_Cliente,
-      Resultado         => Cliente_4,
-      Cuenta_Nueva      => Cuenta_4,
-      Tarjeta_Nueva     => Tarjeta_2,
-      Cedula            => "0405060708",
-      Nombre            => "Ana",
-      Apellido          => "Rodriguez",
-      Direccion         => "Sector Sur 321",
-      Correo            => "ana.rodriguez@mail.com",
-      Telefono          => "0966666666",
-      Tipo_Cuenta       => Clientes_Service.Ahorros,
-      Saldo_Inicial     => 1500.00);
-
-   if Status_Cliente.Estado = Resultado_Operacion.Exito then
-      Put_Line ("[OK] Cliente y tarjeta creados");
-      Put_Line ("  Tarjeta:         " & Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_2.all));
-      Put_Line ("  Limite:          " &
-                Tarjeta_Credito.Limite_Credito_Type'Image
-                  (Tarjeta_Credito.Get_Limite_Credito (Tarjeta_2.all)));
-      Put_Line ("  Saldo Utilizado: " &
-                Tarjeta_Credito.Saldo_Type'Image
-                  (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_2.all)));
-   end if;
-
-   -- 12.2. Realizar compra para crear deuda
-   Imprimir_Subseccion ("Creando Deuda en Nueva Tarjeta");
-   declare
-      Estrategia : constant Transaccion_Tarjeta.Compra_Strategy :=
-        Transaccion_Tarjeta.Compra_Strategy'(null record);
-   begin
-      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion
-        (Estrategia     => Estrategia,
-         Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_2.all),
-         Monto          => 300.00,
-         Descripcion    => "Compra de prueba");
-
-      if Status_Tarjeta.Estado = Resultado_Operacion.Exito then
-         Put_Line ("[OK] Compra realizada: $300.00");
-         Put_Line ("  Saldo Utilizado: " &
-                   Tarjeta_Credito.Saldo_Type'Image
-                     (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_2.all)));
-      end if;
-   end;
-
-   -- 12.3. Intentar eliminar tarjeta con deuda (debe fallar) - método que faltaba
-   Imprimir_Subseccion ("Intentando Eliminar Tarjeta con Deuda (debe fallar)");
-   Tarjeta_Credito_Service.Eliminar_Tarjeta
-     (Status         => Status_Tarjeta,
-      Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_2.all));
-
-   if Status_Tarjeta.Estado /= Resultado_Operacion.Exito then
-      Put_Line ("[OK] OK: No se permite eliminar con deuda");
-      Put_Line ("  Razon: " & Status_Tarjeta.Mensaje);
-   else
-      Put_Line ("[X] ERROR: No deberia eliminar tarjeta con deuda!");
-   end if;
-
-   -- 12.4. Pagar toda la deuda
-   Imprimir_Subseccion ("Pagando Deuda Total para Poder Eliminar");
-   declare
-      Estrategia_Pago : constant Transaccion_Tarjeta.Pago_Tarjeta_Strategy :=
-        Transaccion_Tarjeta.Pago_Tarjeta_Strategy'(null record);
-      Deuda_Total : constant Tarjeta_Credito.Saldo_Type :=
-        Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_2.all);
-   begin
-      Put_Line ("  Pagando: " & Deuda_Total'Image);
-      Status_Tarjeta := Tarjeta_Credito_Service.Ejecutar_Operacion
-        (Estrategia     => Estrategia_Pago,
-         Numero_Tarjeta => Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_2.all),
-         Monto          => Deuda_Total);
-
-      if Status_Tarjeta.Estado = Resultado_Operacion.Exito then
-         Put_Line ("[OK] Deuda pagada completamente");
-         Put_Line ("  Saldo Utilizado: " &
-                   Tarjeta_Credito.Saldo_Type'Image
-                     (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_2.all)));
-      end if;
-   end;
-
-   -- 12.5. Ahora eliminar la tarjeta sin deuda
-   Imprimir_Subseccion ("Eliminando Tarjeta sin Deuda");
-   declare
-      Numero_Tarjeta_A_Eliminar : constant String :=
-        Tarjeta_Credito.Get_Numero_Tarjeta (Tarjeta_2.all);
-   begin
-      Tarjeta_Credito_Service.Eliminar_Tarjeta
-        (Status         => Status_Tarjeta,
-         Numero_Tarjeta => Numero_Tarjeta_A_Eliminar);
-
-      if Status_Tarjeta.Estado = Resultado_Operacion.Exito then
-         Put_Line ("[OK] Tarjeta eliminada exitosamente!");
-         Put_Line ("  Numero eliminado: " & Numero_Tarjeta_A_Eliminar);
-
-         -- Verificar que ya no existe
-         declare
-            Tarjeta_Verificacion : constant Tarjeta_Credito.Tarjeta_Credito_Access :=
-              Tarjeta_Credito_Service.Obtener_Tarjeta (Numero_Tarjeta_A_Eliminar);
-         begin
-            if Tarjeta_Verificacion = null then
-               Put_Line ("  Verificacion: Tarjeta no encontrada en el sistema [OK]");
-            else
-               Put_Line ("  [X] ERROR: La tarjeta todavia existe!");
-            end if;
-         end;
-      else
-         Put_Line ("[X] Error: " & Status_Tarjeta.Mensaje);
-      end if;
-   end;
+   -- 9. ELIMINACION DE TARJETAS (FUNCIONALIDAD REMOVIDA)
+   Put_Line ("[INFO] La funcionalidad de eliminar tarjetas ha sido removida del sistema.");
 
    -------------------------------------------------------
    -- RESUMEN FINAL
@@ -799,11 +686,6 @@ begin
              Tarjeta_Credito.Saldo_Type'Image
                (Tarjeta_Credito.Get_Saldo_Utilizado (Tarjeta_1.all)));
 
-   Put_Line ("");
-   Put_Line ("CLIENTE 4 (Ana Rodriguez):");
-   Put_Line ("  Cuenta:  " & Clientes.Get_Numero_Cuenta (Cliente_4));
-   Put_Line ("  Saldo:   " & Cuentas.Saldo_Type'Image (Cuentas.Get_Saldo (Cuenta_4.all)));
-   Put_Line ("  Tarjeta: ELIMINADA");
 
    Imprimir_Separador;
    Put_Line ("[OK] Todas las pruebas completadas exitosamente");
