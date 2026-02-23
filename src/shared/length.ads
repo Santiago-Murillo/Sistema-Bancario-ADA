@@ -12,7 +12,7 @@ package Length is
    MIN_SALDO         : constant := -2000.00;
    MAX_LIMITE_SOBREGIRO : constant := 2000.00;
    MAX_LIMITE_CREDITO : constant := 8000.00;
-   MAX_TRANSACCION : constant := 5000.00;
+   MAX_MONTO_TRANSACCION : constant := 5000.00;
 
    -- Valores por defecto
    DEFAULT_INTERES_SOBREGIRO : constant := 22.00;

@@ -19,7 +19,7 @@ package Transaccion_Tarjeta is
                       Tarjeta : in out Tarjeta_Credito_Type'Class;
                       Monto   : Saldo_Type) return Tarjeta_Resultado_Type is abstract
      with
-       Pre'Class => Monto > 0.0 and Monto <= Length.MAX_TRANSACCION;
+       Pre'Class => Monto > 0.0 and Monto <= Length.MAX_MONTO_TRANSACCION;
 
    -- Estrategia de Compra
    type Compra_Strategy is new I_Transaccion_Tarjeta_Strategy with null record;

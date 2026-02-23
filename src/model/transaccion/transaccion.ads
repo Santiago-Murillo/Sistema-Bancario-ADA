@@ -14,7 +14,7 @@ package Transaccion is
                        Destino : in out Cuenta_Type'Class;
                        Monto   : Saldo_Type) is abstract
      with
-       Pre'Class => Monto > 0.0 and Monto <= Length.MAX_TRANSACCION;
+       Pre'Class => Monto > 0.0 and Monto <= Length.MAX_MONTO_TRANSACCION;
 
    type Deposito_Strategy is new I_Transaccion_Strategy with null record;
 

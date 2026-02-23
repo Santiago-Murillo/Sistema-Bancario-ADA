@@ -29,7 +29,7 @@ package Movimientos is
       return Movimiento_Type
    with
       Pre =>
-        (Monto > 0.0 and Monto <= Length.MAX_TRANSACCION) and
+        (Monto > 0.0 and Monto <= Length.MAX_MONTO_TRANSACCION) and
         (Descripcion'Length <= Length.MAX_TEXTO_LARGO) and
         (Cuenta_Origen'Length > 0 and Cuenta_Origen'Length <= Length.MAX_ID) and
         (Cuenta_Destino'Length > 0 and Cuenta_Destino'Length <= Length.MAX_ID);

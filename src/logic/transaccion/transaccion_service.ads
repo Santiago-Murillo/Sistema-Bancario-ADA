@@ -12,7 +12,7 @@ package Transaccion_Service is
       Monto         : Saldo_Type;
       Descripcion   : String;
       Id_Movimiento : out Id_Movimiento_Type) return Boolean
-     with Pre => (Monto > 0.0 and Monto <= Length.MAX_TRANSACCION) and
+     with Pre => (Monto > 0.0 and Monto <= Length.MAX_MONTO_TRANSACCION) and
                  (Descripcion'Length <= Length.MAX_TEXTO_LARGO);
 
 end Transaccion_Service;
