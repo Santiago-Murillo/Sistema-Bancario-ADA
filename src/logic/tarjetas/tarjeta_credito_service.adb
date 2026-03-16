@@ -92,7 +92,7 @@ package body Tarjeta_Credito_Service is
              "Limite Credito: " & Get_Limite_Credito (Tarjeta.all)'Image & ASCII.LF &
              "Saldo Utilizado: " & Get_Saldo_Utilizado (Tarjeta.all)'Image & ASCII.LF &
              "Credito Disponible: " & Get_Credito_Disponible (Tarjeta.all)'Image & ASCII.LF &
-             "Tasa Interes Mensual: " & Get_Tasa_Interes_Mensual (Tarjeta.all)'Image & "%" & ASCII.LF &
+             "Tasa Interes Anual: " & Get_Tasa_Interes_Anual (Tarjeta.all)'Image & "%" & ASCII.LF &
              "Vencida: " & (if Esta_Vencida (Tarjeta.all) then "SI" else "NO");
    end Consultar_Estado_Tarjeta;
 

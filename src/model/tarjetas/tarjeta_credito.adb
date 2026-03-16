@@ -39,7 +39,7 @@ package body Tarjeta_Credito is
       Tarjeta.Saldo_Utilizado := 0.0;
       Tarjeta.Fecha_Emision := Ahora;
       Tarjeta.Fecha_Vencimiento := Ahora + Vigencia;
-      Tarjeta.Tasa_Interes_Mensual := Tasa_Interes_Fija_Type (Length.DEFAULT_TASA_INTERES_TARJETA);
+      Tarjeta.Tasa_Interes_Anual := Tasa_Interes_Fija_Type (Length.DEFAULT_TASA_INTERES_TARJETA);
 
       return Tarjeta;
    end Crear_Tarjeta_Credito;
@@ -70,10 +70,10 @@ package body Tarjeta_Credito is
       return T.Fecha_Vencimiento;
    end Get_Fecha_Vencimiento;
 
-   function Get_Tasa_Interes_Mensual (T : Tarjeta_Credito_Type) return Tasa_Interes_Type is
+   function Get_Tasa_Interes_Anual (T : Tarjeta_Credito_Type) return Tasa_Interes_Type is
    begin
-      return T.Tasa_Interes_Mensual;
-   end Get_Tasa_Interes_Mensual;
+      return T.Tasa_Interes_Anual;
+   end Get_Tasa_Interes_Anual;
 
    -- Operaciones de consulta
    function Get_Credito_Disponible (T : Tarjeta_Credito_Type) return Saldo_Type is
@@ -106,7 +106,7 @@ package body Tarjeta_Credito is
 
    procedure Aplicar_Interes (T : in out Tarjeta_Credito_Type) is
       Interes : constant Saldo_Type :=
-        Saldo_Type (Float (T.Saldo_Utilizado) * Float (T.Tasa_Interes_Mensual) / 100.0);
+        Saldo_Type (Float (T.Saldo_Utilizado) * Float (T.Tasa_Interes_Anual) / (100.0 * 12.0));
    begin
       T.Saldo_Utilizado := T.Saldo_Utilizado + Interes;
    end Aplicar_Interes;

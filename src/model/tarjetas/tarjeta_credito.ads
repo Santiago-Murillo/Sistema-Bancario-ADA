@@ -29,7 +29,7 @@ package Tarjeta_Credito is
    function Get_Saldo_Utilizado (T : Tarjeta_Credito_Type) return Saldo_Type;
    function Get_Fecha_Emision (T : Tarjeta_Credito_Type) return Ada.Calendar.Time;
    function Get_Fecha_Vencimiento (T : Tarjeta_Credito_Type) return Ada.Calendar.Time;
-   function Get_Tasa_Interes_Mensual (T : Tarjeta_Credito_Type) return Tasa_Interes_Type;
+   function Get_Tasa_Interes_Anual (T : Tarjeta_Credito_Type) return Tasa_Interes_Type;
 
    -- Operaciones de consulta
    function Get_Credito_Disponible (T : Tarjeta_Credito_Type) return Saldo_Type
@@ -71,7 +71,7 @@ private
       Saldo_Utilizado       : Saldo_Type := 0.0;
       Fecha_Emision         : Ada.Calendar.Time;
       Fecha_Vencimiento     : Ada.Calendar.Time;
-      Tasa_Interes_Mensual  : Tasa_Interes_Fija_Type;
+      Tasa_Interes_Anual    : Tasa_Interes_Fija_Type;
    end record;
 
 end Tarjeta_Credito;
