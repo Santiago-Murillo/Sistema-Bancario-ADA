@@ -17,8 +17,8 @@ package Length is
    -- Valores por defecto
    DEFAULT_INTERES_SOBREGIRO : constant := 22.00;
    DEFAULT_TASA_INTERES_AHORROS : constant := 3.00;
-   DEFAULT_TASA_INTERES_TARJETA : constant := 3.50;
-   MIN_PAGO_MENSUAL_PORCENTAJE : constant := 5.0;
-   DEFAULT_VIGENCIA_TARJETA : constant := 3.0;
+   DEFAULT_TASA_INTERES_TARJETA : constant := 22.00;
+   MIN_PAGO_MENSUAL_PORCENTAJE : constant := 5.00;
+   DEFAULT_VIGENCIA_TARJETA : constant := 3.00;
 
 end Length;
